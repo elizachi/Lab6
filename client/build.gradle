@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'application'
 }
 
 group 'ru.itmo'
@@ -14,9 +13,12 @@ dependencies {
     implementation project(":common")
 }
 
-application {
-    mainClass = 'ru.itmo.client.ClientLauncher'
-}
-test {
-    useJUnitPlatform()
+jar {
+    manifest {
+        attributes "Main-Class": "ru.itmo.client.ClientLauncher"
+    }
+
+    from {
+        configurations.compileClasspath.collect {it.isDirectory() ? it : zipTree(it)}
+    }
 }

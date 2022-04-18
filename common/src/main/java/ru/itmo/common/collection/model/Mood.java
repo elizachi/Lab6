@@ -1,4 +1,4 @@
-package ru.itmo.common.model;
+package ru.itmo.common.collection.model;
 
 public enum Mood {
     SADNESS,

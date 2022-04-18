@@ -1,4 +1,4 @@
-package ru.itmo.common.model;
+package ru.itmo.common.collection.model;
 
 // import com.fasterxml.jackson.annotation.JsonFormat;
 // import com.fasterxml.jackson.annotation.JsonInclude;
