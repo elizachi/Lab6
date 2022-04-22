@@ -5,6 +5,7 @@ import ru.itmo.common.exceptions.TypeOfError;
 import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.messages.MessageManager;
 import ru.itmo.common.model.Coordinates;
+import ru.itmo.common.model.Mood;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -182,7 +183,7 @@ public class AskInput {
         Boolean realHero = null;
         boolean flag = true;
         while (flag) {
-            printMessage("Был ли он героем?");
+            printMessage("Есть ли у него зубочистка?");
             try {
                 realHero = toBoolean(in.readInput(), true);
                 flag = false;
@@ -227,6 +228,24 @@ public class AskInput {
             }
         }
         return new Coordinates(x, y);
+    }
+
+    private Mood askMood(InputHandler in) {
+        Mood mood = null;
+        boolean flag = true;
+        while (flag) {
+            printMessage("Введите состояние персонажа:");
+            try {
+                mood = isCorrectMood(in.readInput());
+                flag = false;
+            } catch (WrongArgumentException e) {
+                msg.printErrorMessage(e);
+                flag = true;
+            } catch (IOException e) {
+
+            }
+        }
+        return mood;
     }
     /**
      * Внутренний метод для более удобного преобразования String в Boolean
@@ -331,6 +350,17 @@ public class AskInput {
         }
     }
 
+    private Mood isCorrectMood(String input) throws WrongArgumentException {
+        try {
+            return Mood.valueOf(input.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            if(input.isEmpty()) {
+                msg.printWarningMessage();
+                return null;
+            }
+            else throw new WrongArgumentException(TypeOfError.UNKNOWN);
+        }
+    }
     /**
      * Внутренний метод для вывода сообщения относительно friendlyInterface
      * @param message строка, которая будет напечатана, если дружественный интерфейс включен
