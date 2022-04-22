@@ -76,9 +76,9 @@ public class AskInput {
     }
 
     /**
-     * Запрашивает ввод поля id и валидирует введённое пользователем значение
+     * Запрашивает ввод полей и валидирует введённое пользователем значение
      * @param in - тип считывания (с консоли или с файла)
-     * @return id, если оно было введено верно
+     * @return поле, если оно было введено верно
      */
     private int askId(InputHandler in) {
         int input = -1;
@@ -145,6 +145,7 @@ public class AskInput {
         }
         return minutes;
     }
+
     private int askImpactSpeed(InputHandler in) {
         int speed = -1;
         while(speed == -1) {
@@ -161,6 +162,21 @@ public class AskInput {
         return speed;
     }
 
+    private Boolean askRealHero(InputHandler in) {
+        Boolean realHero = null;
+        while (realHero == null) {
+            printMessage("Был ли он героем?");
+            try {
+                realHero = toBoolean(in.readInput());
+            } catch (WrongArgumentException e) {
+                msg.printErrorMessage(e);
+                realHero = null;
+            } catch (IOException e) {
+
+            }
+        }
+        return realHero;
+    }
     /**
      * Внутренний метод для более удобного преобразования String в Boolean
      * @param input строка, которая будет преобразовываться в Boolean
