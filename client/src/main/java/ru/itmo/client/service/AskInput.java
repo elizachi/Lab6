@@ -145,6 +145,21 @@ public class AskInput {
         }
         return minutes;
     }
+    private int askImpactSpeed(InputHandler in) {
+        int speed = -1;
+        while(speed == -1) {
+            printMessage("Введите скорость:");
+            try {
+                speed = isCorrectInteger(in.readInput(), -1);
+            } catch (WrongArgumentException e) {
+                msg.printErrorMessage(e);
+                speed = -1;
+            } catch (IOException e) {
+
+            }
+        }
+        return speed;
+    }
 
     /**
      * Внутренний метод для более удобного преобразования String в Boolean

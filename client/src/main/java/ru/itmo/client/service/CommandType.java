@@ -1,10 +1,11 @@
 package ru.itmo.client.service;
 
 public enum CommandType {
-    ADD(new String[]{"askName", "askSoundtrackName", "askMinutesOfWaiting"}),
+    ADD(new String[]{"askName", "askSoundtrackName", "askMinutesOfWaiting",
+            "askImpactSpeed"}),
     CLEAR(new String[]{}),
-    FILTER_BY_MINUTES_OF_WAITING(new String[]{}),
-    FILTER_GREATER_THAN_IMPACT_SPEED(new String[]{}),
+    FILTER_BY_MINUTES_OF_WAITING(new String[]{"askMinutesOfWaiting"}),
+    FILTER_GREATER_THAN_IMPACT_SPEED(new String[]{"askImpactSpeed"}),
     HEAD(new String[]{}),
     HELP(new String[]{}),
     INFO(new String[]{}),
@@ -14,7 +15,8 @@ public enum CommandType {
     REMOVE_HEAD(new String[]{}),
     EXECUTE_SCRIPT(new String[]{}),
     SHOW(new String[]{}),
-    UPDATE(new String[]{"askId", "askName", "askSoundtrackName", "askMinutesOfWaiting"}),
+    UPDATE(new String[]{"askId", "askName", "askSoundtrackName",
+            "askMinutesOfWaiting", "askImpactSpeed"}),
     EXIT(new String[]{});
 
     private final String[] commandFields;
