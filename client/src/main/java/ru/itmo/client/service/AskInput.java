@@ -1,13 +1,14 @@
 package ru.itmo.client.service;
 
-import ru.itmo.client.Client;
 import ru.itmo.client.handlers.InputHandler;
-import ru.itmo.common.exceptions.EmptyInputException;
+import ru.itmo.common.exceptions.AbstractException;
+import ru.itmo.common.exceptions.TypeOfError;
 import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.messages.MessageManager;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class AskInput {
     private static boolean CONST_FRIENDLY_INTERFACE;
@@ -19,8 +20,8 @@ public class AskInput {
      */
     public void turnOnFriendly() {
         try {
-            CONST_FRIENDLY_INTERFACE = getBooleanInput(msg.askFriendly());
-        } catch (Exception e) {
+            CONST_FRIENDLY_INTERFACE = toBoolean(msg.askFriendly());
+        } catch (AbstractException e) {
             msg.printErrorMessage(e);
             turnOnFriendly();
         }
@@ -40,36 +41,115 @@ public class AskInput {
         friendlyInterface = CONST_FRIENDLY_INTERFACE;
     }
 
+    public void InputManager(CommandType command, InputHandler in) {
+        try {
+            for(String function: command.getCommandFields()) {
+                Method method = this.getClass().getDeclaredMethod(function, InputHandler.class);
+                method.setAccessible(true);
+                method.invoke(this, in);
+            }
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            System.out.println("Pizdec");
+        }
+
+    }
     /**
-     * Запрашивает ввод команды
-     * @param in
-     * @return
+     * Запрашивает ввод команды и валидирует введённую пользователем строку
+     * @param in - тип считывания (с консоли или с файла)
+     * @return индекс команды, если она была найдена - иначе запрашивает повторный ввод
      */
-    public static String askCommand(InputHandler in) {
-        String command = null;
-        while(command == null) {
+    public int askCommand(InputHandler in) {
+        int input = -1; // до того как индекс нужной команды был найден
+        while(input == -1) {
             printMessage("Введите команду:");
             try {
-                command = in.readInput();
+                input = isCorrectCommand(in.readInput());
             } catch (IOException e) {
 //                ReaderManager.returnOnPreviousReader();
 //                throw new EndException("Произошла ошибка, невозможно прочитать данные из файла.\n");
+            } catch (WrongArgumentException e) {
+                msg.printErrorMessage(e);
+                input = -1;
             }
         }
-        return command;
+        return input;
     }
+
+    /**
+     * Запрашивает ввод поля id и валидирует введённое пользователем значение
+     * @param in - тип считывания (с консоли или с файла)
+     * @return id, если оно было введено верно
+     */
+    private int askId(InputHandler in) {
+        int input = -1;
+        while(input == -1) {
+            printMessage("Введите id:");
+            try {
+                input = isCorrectInteger(in.readInput(), 0);
+            } catch(IOException e) {
+
+            } catch (WrongArgumentException e) {
+                msg.printErrorMessage(e);
+                input = -1;
+            }
+        }
+        return input;
+    }
+
     /**
      * Внутренний метод для более удобного преобразования String в Boolean
      * @param input строка, которая будет преобразовываться в Boolean
      * @return true (если в строке присутствует true, yes, да вне зависимости от регистра), false (если в строке присутствует false, no, нет или если строка пустая)
      */
-    private static Boolean getBooleanInput(String input) throws EmptyInputException, WrongArgumentException {
+    private static Boolean toBoolean(String input) throws WrongArgumentException {
         if (input.equals("true") || input.equals("yes") || input.equals("да")) {
             return true;
         } else if (input.equals("false") || input.equals("no") || input.equals("нет")) {
             return false;
-        } else if (!input.isEmpty()) throw new WrongArgumentException();
-        else throw new EmptyInputException();
+        } else if (!input.isEmpty()) throw new WrongArgumentException(TypeOfError.UNKNOWN);
+        else throw new WrongArgumentException(TypeOfError.EMPTY);
+    }
+
+    /**
+     * Функция для проверки валидности введённого целочисленного значения
+     * @param input - строка, введённая пользователем
+     * @return если строка валидна - возращает целое число, иначе выбрасывает следующее исключение
+     * @throws WrongArgumentException
+     */
+    private Integer isCorrectInteger(String input) throws WrongArgumentException {
+        try {
+            Integer.parseInt(input);
+        } catch (IllegalArgumentException e) {
+            throw new WrongArgumentException(TypeOfError.WRONG_TYPE);
+        }
+        return Integer.parseInt(input);
+    }
+
+    /**
+     * Функция для проверки валидности введённого целого числа с установкой нижней границы
+     * @param input - строка, введённая пользователем
+     * @param begin - нижняя граница для данного поля
+     * @return если строка валидна - возращает целое число, иначе выбрасывает следующее исключение
+     * @throws WrongArgumentException
+     */
+    private Integer isCorrectInteger(String input, int begin) throws WrongArgumentException {
+        try {
+            if (Integer.parseInt(input) <= begin) {
+                throw new WrongArgumentException(TypeOfError.OUT_OF_RANGE);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new WrongArgumentException(TypeOfError.WRONG_TYPE);
+        }
+        return Integer.parseInt(input);
+    }
+
+    private int isCorrectCommand(String input) throws WrongArgumentException {
+        try {
+            return CommandType.valueOf(input.toUpperCase()).ordinal();
+        } catch (IllegalArgumentException e) {
+            if(input.isEmpty()) throw new WrongArgumentException(TypeOfError.EMPTY);
+            throw new WrongArgumentException(TypeOfError.UNKNOWN);
+        }
     }
 
     /**

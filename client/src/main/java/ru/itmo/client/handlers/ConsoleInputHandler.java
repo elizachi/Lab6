@@ -11,10 +11,9 @@ public class ConsoleInputHandler extends InputHandler{
      */
     @Override
     public String readInput() {
-        //ВНиМАНиЕ!!!! Считывает только первое слово введённой строки. Остальные данные игнорируются.
+        //ВНиМАНиЕ!!!! Считывает со строки столько слов, сколько передано в аргументе
         try {
-            String input = scanner.nextLine().trim().split(" ")[0];
-            return input;
+            return scanner.nextLine().trim().split(" ")[0];
         } catch(NoSuchElementException e) {
             System.out.print("Куда ты жмал?? Программа завершает свою работу без сохранения данных.\n");
             System.exit(0);

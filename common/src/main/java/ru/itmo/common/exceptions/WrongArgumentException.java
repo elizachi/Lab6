@@ -1,7 +1,8 @@
 package ru.itmo.common.exceptions;
 
-public class WrongArgumentException extends Exception{
-    public String getMessage() {
-        return "Данные введены неверно.";
+public class WrongArgumentException extends AbstractException{
+
+    public WrongArgumentException(TypeOfError type) {
+        super(type);
     }
 }

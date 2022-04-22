@@ -1,6 +1,6 @@
-package ru.itmo.common.collection.dao;
+package ru.itmo.server.collection.dao;
 
-import ru.itmo.common.collection.model.HumanBeing;
+import ru.itmo.common.model.HumanBeing;
 
 import java.util.Collection;
 

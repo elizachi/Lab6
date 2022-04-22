@@ -4,11 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class Request {
-    public final String commandName;
+    public final int index;
     public final Object argument;
 
-    public Request(String commandName, Object argument) {
-        this.commandName = commandName;
+    public Request(int index, Object argument) {
+        this.index = index;
         this.argument = new Gson().toJson(argument);
     }
 

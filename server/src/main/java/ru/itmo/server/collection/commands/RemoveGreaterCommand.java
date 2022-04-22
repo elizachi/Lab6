@@ -1,6 +1,6 @@
-package ru.itmo.common.collection.commands;
+package ru.itmo.server.collection.commands;
 
-import ru.itmo.common.collection.dao.DAO;
+import ru.itmo.server.collection.dao.DAO;
 
 public class RemoveGreaterCommand implements Command{
     private final DAO arrayDequeDAO;

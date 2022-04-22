@@ -2,8 +2,7 @@ package ru.itmo.client.to_server;
 
 import ru.itmo.common.requests.Request;
 import ru.itmo.common.responses.Response;
-import ru.itmo.common.collection.dao.DAO;
-import ru.itmo.common.collection.model.HumanBeing;
+import ru.itmo.common.model.HumanBeing;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -11,14 +10,13 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class ServerAPIImpl implements ServerAPI {
-    private static DAO database;
 
     /**
-     * Начало работы определителя команд
+     * Получает команду и данные для ее исполнения
      */
-    public Response executeCommand(String command, HumanBeing human) {
+    public Response executeCommand(int index, HumanBeing human) {
         Request request = new Request(
-                command,
+                index,
                 human
         );
 
@@ -30,6 +28,12 @@ public class ServerAPIImpl implements ServerAPI {
         }
     }
 
+    /**
+     * Отправляет данные на сервер
+     * @param request
+     * @return
+     * @throws IOException
+     */
     private Response sendToServer(Request request) throws IOException {
         Socket socket = new Socket();
         socket.connect(new InetSocketAddress("localhost", 65100));

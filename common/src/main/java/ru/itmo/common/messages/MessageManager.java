@@ -1,5 +1,7 @@
 package ru.itmo.common.messages;
 
+import ru.itmo.common.exceptions.AbstractException;
+
 import java.util.Scanner;
 
 public class MessageManager {
@@ -12,8 +14,8 @@ public class MessageManager {
                 .toLowerCase();
     }
 
-    public void printErrorMessage(Exception e) {
-        System.err.println(e.getMessage());
+    public void printErrorMessage(AbstractException e) {
+        System.err.println(e.getType().getDescription());
     }
 
     public void specialMessage(String field) {
