@@ -96,6 +96,23 @@ public class AskInput {
         return input;
     }
 
+    private String askName(InputHandler in) {
+        String name = null;
+        while (name == null) {
+            printMessage("Введите имя:");
+            try {
+                name = in.readInput();
+                if(name.isEmpty()) throw new WrongArgumentException(TypeOfError.EMPTY);
+            } catch (IOException e) {
+
+            } catch (WrongArgumentException e) {
+                msg.printErrorMessage(e);
+                name = null;
+            }
+        }
+        return name;
+    }
+
     /**
      * Внутренний метод для более удобного преобразования String в Boolean
      * @param input строка, которая будет преобразовываться в Boolean
