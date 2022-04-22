@@ -4,6 +4,7 @@ import ru.itmo.client.handlers.InputHandler;
 import ru.itmo.common.exceptions.TypeOfError;
 import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.messages.MessageManager;
+import ru.itmo.common.model.Coordinates;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -194,6 +195,39 @@ public class AskInput {
         }
         return realHero;
     }
+
+    private Coordinates askCoordinates(InputHandler in) {
+        printMessage("Для определения местоположения персонажа введите координаты.");
+        int x = 0;
+        boolean flag = true;
+        while(flag) {
+            printMessage("Введите координату x:");
+            try {
+                x = isCorrectInteger(in.readInput());
+                flag = false;
+            } catch(WrongArgumentException e) {
+                msg.printErrorMessage(e);
+                flag = true;
+            } catch (IOException e) {
+
+            }
+        }
+        Float y = null;
+        flag = true;
+        while(flag) {
+            printMessage("Введите координату y:");
+            try {
+                y = isCorrectFloat(in.readInput(), -188);
+                flag = false;
+            } catch(WrongArgumentException e) {
+                msg.printErrorMessage(e);
+                flag = true;
+            } catch (IOException e) {
+
+            }
+        }
+        return new Coordinates(x, y);
+    }
     /**
      * Внутренний метод для более удобного преобразования String в Boolean
      * @param input строка, которая будет преобразовываться в Boolean
@@ -225,7 +259,8 @@ public class AskInput {
         try {
             Integer.parseInt(input);
         } catch (IllegalArgumentException e) {
-            throw new WrongArgumentException(TypeOfError.WRONG_TYPE);
+            if(input.isEmpty()) throw new WrongArgumentException(TypeOfError.EMPTY);
+            else throw new WrongArgumentException(TypeOfError.WRONG_TYPE);
         }
         return Integer.parseInt(input);
     }
@@ -266,6 +301,25 @@ public class AskInput {
             else throw new WrongArgumentException(TypeOfError.WRONG_TYPE);
         }
         return Long.parseLong(input);
+    }
+
+    /**
+     * Функция для проверки валидности введённого дробного числа с установкой нижней границы
+     * @param input - строка, введённая пользователем
+     * @param begin - нижняя граница для данного поля
+     * @return если строка валидна - возращает целое число, иначе выбрасывает следующее исключение
+     * @throws WrongArgumentException
+     */
+    private Float isCorrectFloat(String input, int begin) throws WrongArgumentException {
+        try {
+            if (Float.parseFloat(input) <= begin) {
+                throw new WrongArgumentException(TypeOfError.OUT_OF_RANGE);
+            }
+        } catch (IllegalArgumentException e) {
+            if(input.isEmpty()) throw new WrongArgumentException(TypeOfError.EMPTY);
+            else throw new WrongArgumentException(TypeOfError.WRONG_TYPE);
+        }
+        return Float.parseFloat(input);
     }
 
     private int isCorrectCommand(String input) throws WrongArgumentException {
