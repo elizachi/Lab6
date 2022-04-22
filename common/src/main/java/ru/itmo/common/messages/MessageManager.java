@@ -1,6 +1,6 @@
 package ru.itmo.common.messages;
 
-import ru.itmo.common.exceptions.AbstractException;
+import ru.itmo.common.exceptions.WrongArgumentException;
 
 import java.util.Scanner;
 
@@ -14,8 +14,12 @@ public class MessageManager {
                 .toLowerCase();
     }
 
-    public void printErrorMessage(AbstractException e) {
+    public void printErrorMessage(WrongArgumentException e) {
         System.err.println(e.getType().getDescription());
+    }
+
+    public void printWarningMessage() {
+        System.out.println("\u001B[33mВы ввели пустую строку. Поле примет значение null.\u001B[0m");
     }
 
     public void specialMessage(String field) {

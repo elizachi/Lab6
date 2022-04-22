@@ -1,7 +1,6 @@
 package ru.itmo.client.service;
 
 import ru.itmo.client.handlers.InputHandler;
-import ru.itmo.common.exceptions.AbstractException;
 import ru.itmo.common.exceptions.TypeOfError;
 import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.messages.MessageManager;
@@ -20,8 +19,8 @@ public class AskInput {
      */
     public void turnOnFriendly() {
         try {
-            CONST_FRIENDLY_INTERFACE = toBoolean(msg.askFriendly());
-        } catch (AbstractException e) {
+            CONST_FRIENDLY_INTERFACE = toBoolean(msg.askFriendly(), false);
+        } catch (WrongArgumentException e) {
             msg.printErrorMessage(e);
             turnOnFriendly();
         }
@@ -167,10 +166,28 @@ public class AskInput {
         while (realHero == null) {
             printMessage("Был ли он героем?");
             try {
-                realHero = toBoolean(in.readInput());
+                realHero = toBoolean(in.readInput(), false);
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
                 realHero = null;
+            } catch (IOException e) {
+
+            }
+        }
+        return realHero;
+    }
+
+    private Boolean askHasToothpick(InputHandler in) {
+        Boolean realHero = null;
+        boolean flag = true;
+        while (flag) {
+            printMessage("Был ли он героем?");
+            try {
+                realHero = toBoolean(in.readInput(), true);
+                flag = false;
+            } catch (WrongArgumentException e) {
+                msg.printErrorMessage(e);
+                flag = true;
             } catch (IOException e) {
 
             }
@@ -182,13 +199,20 @@ public class AskInput {
      * @param input строка, которая будет преобразовываться в Boolean
      * @return true (если в строке присутствует true, yes, да вне зависимости от регистра), false (если в строке присутствует false, no, нет или если строка пустая)
      */
-    private static Boolean toBoolean(String input) throws WrongArgumentException {
+    private Boolean toBoolean(String input, boolean hasNull) throws WrongArgumentException {
         if (input.equals("true") || input.equals("yes") || input.equals("да")) {
             return true;
         } else if (input.equals("false") || input.equals("no") || input.equals("нет")) {
             return false;
-        } else if (!input.isEmpty()) throw new WrongArgumentException(TypeOfError.UNKNOWN);
-        else throw new WrongArgumentException(TypeOfError.EMPTY);
+        } else if (input.isEmpty() && !hasNull) {
+            throw new WrongArgumentException(TypeOfError.EMPTY);
+        } else if(input.isEmpty()) {
+            msg.printWarningMessage();
+            return null;
+        }
+        else {
+            throw new WrongArgumentException(TypeOfError.UNKNOWN);
+        }
     }
 
     /**

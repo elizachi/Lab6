@@ -1,8 +1,13 @@
 package ru.itmo.common.exceptions;
 
-public class WrongArgumentException extends AbstractException{
+public class WrongArgumentException extends Exception{
+    private final TypeOfError type;
 
     public WrongArgumentException(TypeOfError type) {
-        super(type);
+        this.type = type;
+    }
+
+    public TypeOfError getType() {
+        return type;
     }
 }
