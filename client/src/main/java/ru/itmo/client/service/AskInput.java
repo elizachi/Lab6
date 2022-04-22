@@ -130,6 +130,22 @@ public class AskInput {
         return name;
     }
 
+    private Long askMinutesOfWaiting(InputHandler in) {
+        Long minutes = null;
+        while (minutes == null) {
+            printMessage("Введите минуты ожидания:");
+            try {
+                minutes = isCorrectLong(in.readInput(), -1);
+            } catch (IOException e) {
+
+            } catch (WrongArgumentException e) {
+                msg.printErrorMessage(e);
+                minutes = null;
+            }
+        }
+        return minutes;
+    }
+
     /**
      * Внутренний метод для более удобного преобразования String в Boolean
      * @param input строка, которая будет преобразовываться в Boolean
@@ -172,9 +188,29 @@ public class AskInput {
                 throw new WrongArgumentException(TypeOfError.OUT_OF_RANGE);
             }
         } catch (IllegalArgumentException e) {
-            throw new WrongArgumentException(TypeOfError.WRONG_TYPE);
+            if(input.isEmpty()) throw new WrongArgumentException(TypeOfError.EMPTY);
+            else throw new WrongArgumentException(TypeOfError.WRONG_TYPE);
         }
         return Integer.parseInt(input);
+    }
+
+    /**
+     * Функция для проверки валидности введённого целого числа с установкой нижней границы
+     * @param input - строка, введённая пользователем
+     * @param begin - нижняя граница для данного поля
+     * @return если строка валидна - возращает целое число, иначе выбрасывает следующее исключение
+     * @throws WrongArgumentException
+     */
+    private Long isCorrectLong(String input, int begin) throws WrongArgumentException {
+        try {
+            if (Integer.parseInt(input) <= begin) {
+                throw new WrongArgumentException(TypeOfError.OUT_OF_RANGE);
+            }
+        } catch (IllegalArgumentException e) {
+            if(input.isEmpty()) throw new WrongArgumentException(TypeOfError.EMPTY);
+            else throw new WrongArgumentException(TypeOfError.WRONG_TYPE);
+        }
+        return Long.parseLong(input);
     }
 
     private int isCorrectCommand(String input) throws WrongArgumentException {
