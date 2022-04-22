@@ -4,6 +4,7 @@ import ru.itmo.client.handlers.InputHandler;
 import ru.itmo.common.exceptions.TypeOfError;
 import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.messages.MessageManager;
+import ru.itmo.common.model.Car;
 import ru.itmo.common.model.Coordinates;
 import ru.itmo.common.model.Mood;
 
@@ -247,6 +248,38 @@ public class AskInput {
         }
         return mood;
     }
+
+    private Car askCar(InputHandler in) {
+        printMessage("Введите данные о машине персонажа.");
+        String carName = null;
+        boolean flag = true;
+        while(flag) {
+            printMessage("Введите название машины:");
+            try {
+                carName = in.readInput();
+                if(carName.isEmpty()) msg.printWarningMessage();
+                flag = false;
+            } catch (IOException e) {
+
+            }
+        }
+        boolean cool = false;
+        flag = true;
+        while(flag) {
+            printMessage("Машина крутая?");
+            try {
+                cool = toBoolean(in.readInput(), false);
+                flag = false;
+            } catch(WrongArgumentException e) {
+                msg.printErrorMessage(e);
+                flag = true;
+            } catch (IOException e) {
+
+            }
+        }
+        return new Car(carName, cool);
+    }
+
     /**
      * Внутренний метод для более удобного преобразования String в Boolean
      * @param input строка, которая будет преобразовываться в Boolean
