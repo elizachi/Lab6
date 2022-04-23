@@ -43,9 +43,14 @@ public class AskInput {
         friendlyInterface = CONST_FRIENDLY_INTERFACE;
     }
 
-    public void InputManager(CommandType command, InputHandler in) {
+    /**
+     * Проходится по массиву определённой ранее команды и запрашивает нужные к ней поля
+     * @param in
+     */
+    public void InputManager(InputHandler in) {
+        CommandType commandType = askCommand(in);
         try {
-            for(String function: command.getCommandFields()) {
+            for(String function: commandType.getCommandFields()) {
                 Method method = this.getClass().getDeclaredMethod(function, InputHandler.class);
                 method.setAccessible(true);
                 method.invoke(this, in);
@@ -60,9 +65,9 @@ public class AskInput {
      * @param in - тип считывания (с консоли или с файла)
      * @return индекс команды, если она была найдена - иначе запрашивает повторный ввод
      */
-    public int askCommand(InputHandler in) {
-        int input = -1; // до того как индекс нужной команды был найден
-        while(input == -1) {
+    private CommandType askCommand(InputHandler in) {
+        CommandType input = null;
+        while(input == null) {
             printMessage("Введите команду:");
             try {
                 input = isCorrectCommand(in.readInput());
@@ -71,7 +76,7 @@ public class AskInput {
 //                throw new EndException("Произошла ошибка, невозможно прочитать данные из файла.\n");
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
-                input = -1;
+                input = null;
             }
         }
         return input;
@@ -374,9 +379,9 @@ public class AskInput {
         return Float.parseFloat(input);
     }
 
-    private int isCorrectCommand(String input) throws WrongArgumentException {
+    private CommandType isCorrectCommand(String input) throws WrongArgumentException {
         try {
-            return CommandType.valueOf(input.toUpperCase()).ordinal();
+            return CommandType.valueOf(input.toUpperCase());
         } catch (IllegalArgumentException e) {
             if(input.isEmpty()) throw new WrongArgumentException(TypeOfError.EMPTY);
             throw new WrongArgumentException(TypeOfError.UNKNOWN);
