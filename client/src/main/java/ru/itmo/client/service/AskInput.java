@@ -4,10 +4,7 @@ import ru.itmo.client.handlers.InputHandler;
 import ru.itmo.common.exceptions.TypeOfError;
 import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.messages.MessageManager;
-import ru.itmo.common.model.Car;
-import ru.itmo.common.model.Coordinates;
-import ru.itmo.common.model.HumanBeing;
-import ru.itmo.common.model.Mood;
+import ru.itmo.common.model.*;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -52,7 +49,7 @@ public class AskInput {
      * соответствует полю, запрашиваемому в данной команде, то происходит вставка запрошенного значения
      * @param in
      */
-    public void askInputManager(InputHandler in) {
+    public Pair askInputManager(InputHandler in) {
         // запрос команды
         CommandType commandType = askCommand(in);
         // новый экземпляр класса HumanBeing - newHuman
@@ -88,6 +85,7 @@ public class AskInput {
         } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             e.printStackTrace();
         }
+        return new Pair(commandType.name(), newHuman);
     }
     /**
      * Запрашивает ввод команды и валидирует введённую пользователем строку
@@ -437,3 +435,33 @@ public class AskInput {
         }
     }
 }
+enum CommandType {
+    ADD(new String[]{"askName", "askSoundtrackName", "askMinutesOfWaiting",
+            "askImpactSpeed", "askRealHero", "askHasToothpick", "askCoordinates", "askMood", "askCar"}),
+    CLEAR(new String[]{}),
+    EXECUTE_SCRIPT(new String[]{}),
+    EXIT(new String[]{}),
+    FILTER_BY_MINUTES_OF_WAITING(new String[]{"askMinutesOfWaiting"}),
+    FILTER_GREATER_THAN_IMPACT_SPEED(new String[]{"askImpactSpeed"}),
+    HEAD(new String[]{}),
+    HELP(new String[]{}),
+    INFO(new String[]{}),
+    PRINT_UNIQUE_IMPACT_SPEED(new String[]{}),
+    REMOVE_BY_ID(new String[]{"askId"}),
+    REMOVE_GREATER(new String[]{"askName", "askSoundtrackName", "askMinutesOfWaiting",
+            "askImpactSpeed", "askRealHero", "askHasToothpick", "askCoordinates", "askMood", "askCar"}),
+    REMOVE_HEAD(new String[]{}),
+    SHOW(new String[]{}),
+    UPDATE(new String[]{"askId", "askName", "askSoundtrackName", "askMinutesOfWaiting",
+            "askImpactSpeed", "askRealHero", "askHasToothpick", "askCoordinates", "askMood", "askCar"});
+
+    private final String[] commandFields;
+
+    CommandType(String[] fields) {
+        this.commandFields = fields;
+    }
+
+    public String[] getCommandFields() {
+        return this.commandFields;
+    }
+};

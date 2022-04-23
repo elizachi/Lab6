@@ -1,8 +1,8 @@
 package ru.itmo.client.to_server;
 
+import ru.itmo.common.model.Pair;
 import ru.itmo.common.requests.Request;
 import ru.itmo.common.responses.Response;
-import ru.itmo.common.model.HumanBeing;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -14,10 +14,10 @@ public class ServerAPIImpl implements ServerAPI {
     /**
      * Получает команду и данные для ее исполнения
      */
-    public Response executeCommand(int index, HumanBeing human) {
+    public Response executeCommand(Pair data) {
         Request request = new Request(
-                index,
-                human
+                data.first(),
+                data.second()
         );
 
         try {
