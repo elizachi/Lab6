@@ -6,11 +6,15 @@ import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.messages.MessageManager;
 import ru.itmo.common.model.Car;
 import ru.itmo.common.model.Coordinates;
+import ru.itmo.common.model.HumanBeing;
 import ru.itmo.common.model.Mood;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Iterator;
 
 public class AskInput {
     private static boolean CONST_FRIENDLY_INTERFACE;
@@ -44,21 +48,46 @@ public class AskInput {
     }
 
     /**
-     * Проходится по массиву определённой ранее команды и запрашивает нужные к ней поля
+     * Создает новый экземпляр класса HumanBeing с пустыми полями. Проходится по полям класса, и если поле класса
+     * соответствует полю, запрашиваемому в данной команде, то происходит вставка запрошенного значения
      * @param in
      */
-    public void InputManager(InputHandler in) {
+    public void askInputManager(InputHandler in) {
+        // запрос команды
         CommandType commandType = askCommand(in);
+        // новый экземпляр класса HumanBeing - newHuman
+        HumanBeing newHuman = new HumanBeing();
+        // итератор для перемещения по нужным для команды методам
+        Iterator<String> iterator = Arrays.stream(commandType.getCommandFields()).iterator();
         try {
-            for(String function: commandType.getCommandFields()) {
-                Method method = this.getClass().getDeclaredMethod(function, InputHandler.class);
-                method.setAccessible(true);
-                method.invoke(this, in);
+            if(iterator.hasNext()) {
+                // название нужного для запроса поля в массиве энама выбранной команды
+                String commandName = iterator.next();
+                // цикл foreach для полей newHuman
+                for (Field fields : newHuman.getClass().getDeclaredFields()) {
+                    // название нынешнего поля newHuman
+                    String fieldName = fields.getName().toLowerCase();
+                    // если поле массива энама команды совпадает с перебираемым полем экземпляра newHuman
+                    if (fieldName.equals(commandName.substring(3).toLowerCase())) {
+                        // беру ссылку на необходимый для запроса метод
+                        Method method = this.getClass().getDeclaredMethod(commandName, InputHandler.class);
+                        // ставлю разрешение на использование метода
+                        method.setAccessible(true);
+                        // вызываю нужный метод и получаю уже проверенное введенное значение
+                        Object o = method.invoke(this, in);
+                        // ставлю разрешение на изменение приватного поля newHuman
+                        fields.setAccessible(true);
+                        // изменяю значение приватного поля
+                        fields.set(newHuman, o);
+                        // перехожу к следующему необходимому для команды полю
+                        if(iterator.hasNext()) commandName = iterator.next();
+                        else break;
+                    }
+                }
             }
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            System.out.println("Pizdec");
+        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+            e.printStackTrace();
         }
-
     }
     /**
      * Запрашивает ввод команды и валидирует введённую пользователем строку
@@ -72,8 +101,7 @@ public class AskInput {
             try {
                 input = isCorrectCommand(in.readInput());
             } catch (IOException e) {
-//                ReaderManager.returnOnPreviousReader();
-//                throw new EndException("Произошла ошибка, невозможно прочитать данные из файла.\n");
+
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
                 input = null;

@@ -29,5 +29,4 @@ public enum CommandType {
     public String[] getCommandFields() {
         return this.commandFields;
     }
-
 };

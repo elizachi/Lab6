@@ -11,7 +11,6 @@ public class ConsoleInputHandler extends InputHandler{
      */
     @Override
     public String readInput() {
-        //ВНиМАНиЕ!!!! Считывает со строки столько слов, сколько передано в аргументе
         try {
             return scanner.nextLine().trim().split(" ")[0];
         } catch(NoSuchElementException e) {
