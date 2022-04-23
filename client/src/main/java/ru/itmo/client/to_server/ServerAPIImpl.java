@@ -10,6 +10,13 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class ServerAPIImpl implements ServerAPI {
+    private final String serverHost;
+    private final int serverPort;
+
+    public ServerAPIImpl(String serverHost, int serverPort) {
+        this.serverHost = serverHost;
+        this.serverPort = serverPort;
+    }
 
     /**
      * Получает команду и данные для ее исполнения
@@ -19,12 +26,11 @@ public class ServerAPIImpl implements ServerAPI {
                 data.first(),
                 data.second()
         );
-
         try {
             return sendToServer(request);
         } catch (IOException e) {
-            /*handle error*/
-            throw new RuntimeException(e);
+            System.out.println("Похоже, что-то пошло не так...");
+            throw new RuntimeException("Pizda");
         }
     }
 
@@ -36,7 +42,7 @@ public class ServerAPIImpl implements ServerAPI {
      */
     private Response sendToServer(Request request) throws IOException {
         Socket socket = new Socket();
-        socket.connect(new InetSocketAddress("localhost", 65100));
+        socket.connect(new InetSocketAddress(serverHost, serverPort));
 
         socket.getOutputStream().write(request.toJson().getBytes(StandardCharsets.UTF_8));
         byte[] buffer = new byte[4096];

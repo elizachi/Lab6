@@ -12,13 +12,18 @@ public class Client {
 
     // todo получать порт и хост здесь
     public void start() {
-        ServerAPI serverAPI = new ServerAPIImpl();
+        String serverHost = "localhost";
+        int serverPort = 65100;
+        ServerAPI serverAPI = new ServerAPIImpl(serverHost, serverPort);
 
         Pair data = ask.askInputManager(ReaderManager.getReader());
-        Response response = serverAPI.executeCommand(data);
-
-        if(response.status == Response.Status.OK) {
-            System.out.println("Ура ура! Получилось!");
+        try {
+            Response response = serverAPI.executeCommand(data);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         }
+//        if(response.status == Response.Status.OK) {
+//            System.out.println("Ура ура! Получилось!");
+//        }
     }
 }
