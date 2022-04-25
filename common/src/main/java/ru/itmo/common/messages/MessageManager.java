@@ -21,7 +21,9 @@ public class MessageManager {
     public void printWarningMessage() {
         System.out.println("\u001B[33mВы ввели пустую строку. Поле примет значение null.\u001B[0m");
     }
-
+    public void printWarningMessage(WrongArgumentException e) {
+        System.out.println("\u001B[33m"+e.getType().getDescription()+"\u001B[0m");
+    }
     public void specialMessage(String field) {
         System.out.println("Введите"+field+":");
     }

@@ -1,10 +1,15 @@
 package ru.itmo.client.handlers;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 
 public class FileInputHandler extends InputHandler{
+    private final BufferedReader reader;
+    public FileInputHandler(BufferedReader reader) {
+        this.reader = reader;
+    }
     @Override
     public String readInput() throws IOException {
-        return null;
+        return reader.readLine().trim().split(" ")[0];
     }
 }

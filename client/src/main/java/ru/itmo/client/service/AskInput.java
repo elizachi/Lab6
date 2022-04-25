@@ -6,12 +6,13 @@ import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.messages.MessageManager;
 import ru.itmo.common.model.*;
 
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Objects;
 
 public class AskInput {
     private static boolean CONST_FRIENDLY_INTERFACE;
@@ -49,9 +50,15 @@ public class AskInput {
      * соответствует полю, запрашиваемому в данной команде, то происходит вставка запрошенного значения
      * @param in
      */
-    public Pair askInputManager(InputHandler in) {
-        // запрос команды
-        CommandType commandType = askCommand(in);
+    public Pair askInputManager(InputHandler in) throws WrongArgumentException{
+        CommandType commandType = null;
+        try {
+            // запрос команды
+            commandType = askCommand(in);
+        } catch(NullPointerException e) {
+            ReaderManager.returnOnPreviousReader();
+            throw new WrongArgumentException(TypeOfError.END_OF_FILE);
+        }
         // новый экземпляр класса HumanBeing - newHuman
         HumanBeing newHuman = new HumanBeing();
         // итератор для перемещения по нужным для команды методам
@@ -80,6 +87,10 @@ public class AskInput {
                         if(iterator.hasNext()) commandName = iterator.next();
                         else break;
                     }
+                }
+                if(Objects.equals(commandName, "askFileName")) {
+                    ReaderManager.turnOnFile(askFileName(in));
+                    throw new WrongArgumentException(TypeOfError.SWITCH_READER);
                 }
             }
         } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
@@ -311,6 +322,22 @@ public class AskInput {
         return new Car(carName, cool);
     }
 
+    private BufferedReader askFileName(InputHandler in) {
+        FileReader fileInput = null;
+        while(fileInput == null) {
+            printMessage("Введите путь до файла, который хотите прочесть:");
+            try {
+                fileInput = isCorrectFile(in.readInput());
+            } catch (IOException e) {
+//                ReaderManager.returnOnPreviousReader();
+//                throw new EndException("Произошла ошибка, невозможно прочитать данные из файла.\n");
+            } catch (WrongArgumentException e) {
+                msg.printErrorMessage(e);
+            }
+        }
+        return new BufferedReader(fileInput);
+    }
+
     /**
      * Внутренний метод для более удобного преобразования String в Boolean
      * @param input строка, которая будет преобразовываться в Boolean
@@ -425,6 +452,14 @@ public class AskInput {
             else throw new WrongArgumentException(TypeOfError.UNKNOWN);
         }
     }
+
+    private FileReader isCorrectFile(String input) throws WrongArgumentException{
+        try {
+            return new FileReader(input);
+        } catch (FileNotFoundException e) {
+            throw new WrongArgumentException(TypeOfError.NOT_FOUND);
+        }
+    }
     /**
      * Внутренний метод для вывода сообщения относительно friendlyInterface
      * @param message строка, которая будет напечатана, если дружественный интерфейс включен
@@ -439,7 +474,7 @@ enum CommandType {
     ADD(new String[]{"askName", "askSoundtrackName", "askMinutesOfWaiting",
             "askImpactSpeed", "askRealHero", "askHasToothpick", "askCoordinates", "askMood", "askCar"}),
     CLEAR(new String[]{}),
-    EXECUTE_SCRIPT(new String[]{}),
+    EXECUTE_SCRIPT(new String[]{"askFileName"}),
     EXIT(new String[]{}),
     FILTER_BY_MINUTES_OF_WAITING(new String[]{"askMinutesOfWaiting"}),
     FILTER_GREATER_THAN_IMPACT_SPEED(new String[]{"askImpactSpeed"}),
