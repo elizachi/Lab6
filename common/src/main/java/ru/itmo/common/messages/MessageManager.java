@@ -5,15 +5,52 @@ import ru.itmo.common.exceptions.WrongArgumentException;
 import java.util.Scanner;
 
 public class MessageManager {
-    Scanner scanner = new Scanner(System.in);
+    private static boolean CONST_FRIENDLY_INTERFACE;
+    private static boolean friendlyInterface;
+    private final Scanner scanner = new Scanner(System.in);
 
-    public String askFriendly() {
+    /**
+     * Включает дружественный интерфейс и запоминает изначальную его настройку
+     */
+    public void turnOnFriendly() {
         System.out.println("Включить дружественный интерфейс?");
-        return scanner.nextLine().trim()
-                .split(" ")[0]
-                .toLowerCase();
+        String answer = scanner.nextLine().trim()
+                .split(" ")[0].toLowerCase();
+        if(answer.isEmpty()) {
+            CONST_FRIENDLY_INTERFACE = false;
+        } else {
+            CONST_FRIENDLY_INTERFACE = true;
+        }
+        friendlyInterface = CONST_FRIENDLY_INTERFACE;
     }
 
+    /**
+     * Выключает дружественный интерфейс
+     */
+    public static void turnOffFriendly() {
+        friendlyInterface = false;
+    }
+
+    /**
+     * Возвращает к изначальной настройке дружественного интерфейса
+     */
+    public static void returnFriendly() {
+        friendlyInterface = CONST_FRIENDLY_INTERFACE;
+    }
+
+    /**
+     * Внутренний метод для вывода сообщения относительно friendlyInterface
+     */
+    public void printMessage(String name){
+        if (friendlyInterface) {
+            System.out.println("Введите "+name+":");
+        }
+    }
+
+    /**
+     * Выводит сообщение, объясняющее природу вызванного исключения
+     * @param e - исключение
+     */
     public void printErrorMessage(WrongArgumentException e) {
         System.err.println(e.getType().getDescription());
     }
@@ -23,8 +60,5 @@ public class MessageManager {
     }
     public void printWarningMessage(WrongArgumentException e) {
         System.out.println("\u001B[33m"+e.getType().getDescription()+"\u001B[0m");
-    }
-    public void specialMessage(String field) {
-        System.out.println("Введите"+field+":");
     }
 }

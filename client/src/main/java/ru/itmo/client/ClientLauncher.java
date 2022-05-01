@@ -1,13 +1,13 @@
 package ru.itmo.client;
 
-import ru.itmo.client.service.AskInput;
 import ru.itmo.client.service.ReaderManager;
+import ru.itmo.common.messages.MessageManager;
 
 public class ClientLauncher {
 
     public static void main(String[] args) {
         // Запрос на включение дружественного интерфейса
-        new AskInput().turnOnFriendly();
+        new MessageManager().turnOnFriendly();
         // Включение считывание с консоли
         ReaderManager.turnOnConsole();
         // Новый клиент

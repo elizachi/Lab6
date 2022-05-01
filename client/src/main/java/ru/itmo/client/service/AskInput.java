@@ -15,35 +15,7 @@ import java.util.Iterator;
 import java.util.Objects;
 
 public class AskInput {
-    private static boolean CONST_FRIENDLY_INTERFACE;
-    private static boolean friendlyInterface;
     private final MessageManager msg = new MessageManager();
-
-    /**
-     * Метод, позволяющй включить дружественный интерфейс
-     */
-    public void turnOnFriendly() {
-        try {
-            CONST_FRIENDLY_INTERFACE = toBoolean(msg.askFriendly(), false);
-        } catch (WrongArgumentException e) {
-            msg.printErrorMessage(e);
-            turnOnFriendly();
-        }
-    }
-
-    /**
-     * Метод, позволяющий выключить дружественный интерфейс
-     */
-    public static void turnOffFriendly() {
-        friendlyInterface = false;
-    }
-
-    /**
-     * Метод, возвращающийся к предыдущемей настройке дружественного интерфейса
-     */
-    public static void returnFriendly() {
-        friendlyInterface = CONST_FRIENDLY_INTERFACE;
-    }
 
     /**
      * Создает новый экземпляр класса HumanBeing с пустыми полями. Проходится по полям класса, и если поле класса
@@ -106,7 +78,7 @@ public class AskInput {
     private CommandType askCommand(InputHandler in) {
         CommandType input = null;
         while(input == null) {
-            printMessage("Введите команду:");
+            msg.printMessage("команду");
             try {
                 input = isCorrectCommand(in.readInput());
             } catch (IOException e) {
@@ -127,7 +99,7 @@ public class AskInput {
     private int askId(InputHandler in) {
         int input = -1;
         while(input == -1) {
-            printMessage("Введите id:");
+            msg.printMessage("id");
             try {
                 input = isCorrectInteger(in.readInput(), 0);
             } catch(IOException e) {
@@ -143,7 +115,7 @@ public class AskInput {
     private String askName(InputHandler in) {
         String name = null;
         while (name == null) {
-            printMessage("Введите имя:");
+            msg.printMessage("имя");
             try {
                 name = in.readInput();
                 if(name.isEmpty()) throw new WrongArgumentException(TypeOfError.EMPTY);
@@ -160,7 +132,7 @@ public class AskInput {
     private String askSoundtrackName(InputHandler in) {
         String name = null;
         while (name == null) {
-            printMessage("Введите название саундтрека:");
+            msg.printMessage("саундтрек");
             try {
                 name = in.readInput();
                 if(name.isEmpty()) throw new WrongArgumentException(TypeOfError.EMPTY);
@@ -177,7 +149,7 @@ public class AskInput {
     private Long askMinutesOfWaiting(InputHandler in) {
         Long minutes = null;
         while (minutes == null) {
-            printMessage("Введите минуты ожидания:");
+            msg.printMessage("минуты");
             try {
                 minutes = isCorrectLong(in.readInput(), -1);
             } catch (IOException e) {
@@ -193,7 +165,7 @@ public class AskInput {
     private int askImpactSpeed(InputHandler in) {
         int speed = -1;
         while(speed == -1) {
-            printMessage("Введите скорость:");
+            msg.printMessage("скорость");
             try {
                 speed = isCorrectInteger(in.readInput(), -1);
             } catch (WrongArgumentException e) {
@@ -209,7 +181,7 @@ public class AskInput {
     private Boolean askRealHero(InputHandler in) {
         Boolean realHero = null;
         while (realHero == null) {
-            printMessage("Был ли он героем?");
+            msg.printMessage("статус геройства");
             try {
                 realHero = toBoolean(in.readInput(), false);
             } catch (WrongArgumentException e) {
@@ -226,7 +198,7 @@ public class AskInput {
         Boolean realHero = null;
         boolean flag = true;
         while (flag) {
-            printMessage("Есть ли у него зубочистка?");
+            msg.printMessage("наличие зубочистки");
             try {
                 realHero = toBoolean(in.readInput(), true);
                 flag = false;
@@ -241,11 +213,11 @@ public class AskInput {
     }
 
     private Coordinates askCoordinates(InputHandler in) {
-        printMessage("Для определения местоположения персонажа введите координаты.");
+        msg.printMessage("местоположение");
         int x = 0;
         boolean flag = true;
         while(flag) {
-            printMessage("Введите координату x:");
+            msg.printMessage("координату x");
             try {
                 x = isCorrectInteger(in.readInput());
                 flag = false;
@@ -259,7 +231,7 @@ public class AskInput {
         Float y = null;
         flag = true;
         while(flag) {
-            printMessage("Введите координату y:");
+            msg.printMessage("координату y");
             try {
                 y = isCorrectFloat(in.readInput(), -188);
                 flag = false;
@@ -277,7 +249,7 @@ public class AskInput {
         Mood mood = null;
         boolean flag = true;
         while (flag) {
-            printMessage("Введите состояние персонажа:");
+            msg.printMessage("состояние");
             try {
                 mood = isCorrectMood(in.readInput());
                 flag = false;
@@ -292,11 +264,11 @@ public class AskInput {
     }
 
     private Car askCar(InputHandler in) {
-        printMessage("Введите данные о машине персонажа.");
+        msg.printMessage("данные о машине персонажа");
         String carName = null;
         boolean flag = true;
         while(flag) {
-            printMessage("Введите название машины:");
+            msg.printMessage("название машины");
             try {
                 carName = in.readInput();
                 if(carName.isEmpty()) msg.printWarningMessage();
@@ -308,7 +280,7 @@ public class AskInput {
         boolean cool = false;
         flag = true;
         while(flag) {
-            printMessage("Машина крутая?");
+            msg.printMessage("степень крутости машины");
             try {
                 cool = toBoolean(in.readInput(), false);
                 flag = false;
@@ -325,7 +297,7 @@ public class AskInput {
     private BufferedReader askFileName(InputHandler in) {
         FileReader fileInput = null;
         while(fileInput == null) {
-            printMessage("Введите путь до файла, который хотите прочесть:");
+            msg.printMessage("путь до файла");
             try {
                 fileInput = isCorrectFile(in.readInput());
             } catch (IOException e) {
@@ -458,15 +430,6 @@ public class AskInput {
             return new FileReader(input);
         } catch (FileNotFoundException e) {
             throw new WrongArgumentException(TypeOfError.NOT_FOUND);
-        }
-    }
-    /**
-     * Внутренний метод для вывода сообщения относительно friendlyInterface
-     * @param message строка, которая будет напечатана, если дружественный интерфейс включен
-     */
-    private static void printMessage(String message){
-        if (friendlyInterface) {
-            System.out.println(message);
         }
     }
 }
