@@ -2,12 +2,9 @@ package ru.itmo.client;
 
 import ru.itmo.client.service.AskInput;
 import ru.itmo.client.service.ReaderManager;
-import ru.itmo.client.to_server.ServerAPI;
-import ru.itmo.client.to_server.ServerAPIImpl;
 import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.messages.MessageManager;
 import ru.itmo.common.model.HumanBeing;
-import ru.itmo.common.model.Pair;
 
 public class Client {
     private final MessageManager msg = new MessageManager();
@@ -26,6 +23,7 @@ public class Client {
 //            Response response = serverAPI.executeCommand(data);
             } catch (NullPointerException e) {
                 ReaderManager.returnOnPreviousReader();
+                AskInput.removeLastElement();
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 // если команда введена неверно

@@ -9,7 +9,8 @@ public enum TypeOfError {
     SWITCH_READER("Произведено переключение на считывание с файла"),
     END_OF_FILE("Файл закончился, считывание продолжится на уровень ниже"),
     IGNORE_COMMAND("Команда будет проигнорирована"),
-    IGNORE_STRING("Введённая строка будет проигнорирована");
+    IGNORE_STRING("Введённая строка будет проигнорирована"),
+    ALREADY_EXECUTED("Файл уже был вызван ранее");
 
     private final String description;
 
