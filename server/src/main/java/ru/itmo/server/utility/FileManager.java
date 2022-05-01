@@ -52,7 +52,7 @@ public class FileManager {
                 System.out.println("Коллекция успешно загружена.");
                 return collection;
             } catch (FileNotFoundException exception) {
-                System.err.println("Загрузочный файл не найден!");
+                System.err.println("Загрузочный файл не найден, коллекция будет создана автоматически.");
             } catch (NoSuchElementException exception) {
                 System.err.println("Загрузочный файл пуст!");
             } catch (JsonParseException | NullPointerException exception) {
