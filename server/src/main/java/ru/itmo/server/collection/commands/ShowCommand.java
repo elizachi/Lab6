@@ -10,7 +10,7 @@ public class ShowCommand implements Command{
     }
 
     @Override
-    public void execute() {
-
+    public void execute(Object arguments) {
+        System.out.println(arrayDequeDAO.showCollection());
     }
 }

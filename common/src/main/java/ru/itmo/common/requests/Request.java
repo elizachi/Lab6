@@ -28,4 +28,8 @@ public class Request {
     public String toJson() {
         return new Gson().toJson(this);
     }
+
+    public String getCommand() {
+        return command;
+    }
 }

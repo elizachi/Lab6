@@ -39,7 +39,7 @@ public class AskInput {
     }
 
     /**
-     * Метод, возвращающийся к предыдущемей настройке дружественного интерфейса
+     * Метод, возвращающийся к предыдущей настройке дружественного интерфейса
      */
     public static void returnFriendly() {
         friendlyInterface = CONST_FRIENDLY_INTERFACE;

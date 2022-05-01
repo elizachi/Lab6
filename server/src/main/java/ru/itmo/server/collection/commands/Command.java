@@ -1,5 +1,5 @@
 package ru.itmo.server.collection.commands;
 
 public interface Command {
-    void execute();
+    void execute(Object arguments);
 }

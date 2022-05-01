@@ -133,6 +133,7 @@ public class HumanBeing implements Comparable {
 
     /**
      * переобределение метода compareTo для сортировки
+     * первое поле, по которому происходит сортировка - coordinates
      */
     @Override
     public int compareTo(Object o) {
@@ -145,6 +146,7 @@ public class HumanBeing implements Comparable {
         HumanBeing humanBeing = (HumanBeing) o;
         int result = this.name.compareTo(humanBeing.name);
         if (result == 0) {
+            result = this.getCoordinates().compareTo(humanBeing.getCoordinates());
             if ((hasToothpick == null) || (humanBeing.hasToothpick == null)) {
                 result = 0;
             } else {

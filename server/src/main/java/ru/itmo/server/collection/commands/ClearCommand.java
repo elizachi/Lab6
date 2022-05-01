@@ -1,5 +1,6 @@
 package ru.itmo.server.collection.commands;
 
+import ru.itmo.common.model.HumanBeing;
 import ru.itmo.server.collection.dao.DAO;
 
 public class ClearCommand implements Command{
@@ -10,7 +11,7 @@ public class ClearCommand implements Command{
     }
 
     @Override
-    public void execute() {
-
+    public void execute(Object arguments) {
+        arrayDequeDAO.clearCollection();
     }
 }
