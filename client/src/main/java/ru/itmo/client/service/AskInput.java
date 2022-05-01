@@ -25,10 +25,6 @@ public class AskInput {
     public HumanBeing askInputManager(String commandName, InputHandler in) throws WrongArgumentException{
         HumanBeing newHuman = new HumanBeing();
         CommandType commandType = CommandType.valueOf(commandName);
-        if(Objects.equals(commandType, "askFileName")) {
-            ReaderManager.turnOnFile(askFileName(in));
-            throw new WrongArgumentException(TypeOfError.SWITCH_READER);
-        }
         try {
             // итератор для перемещения по нужным для команды методам
             Iterator<String> iterator = Arrays.stream(commandType.getCommandFields()).iterator();
@@ -55,6 +51,10 @@ public class AskInput {
                         if(iterator.hasNext()) commandName = iterator.next();
                         else break;
                     }
+                }
+                if(Objects.equals(commandName, "askFileName")) {
+                    ReaderManager.turnOnFile(askFileName(in));
+                    throw new WrongArgumentException(TypeOfError.SWITCH_READER);
                 }
             }
         } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {

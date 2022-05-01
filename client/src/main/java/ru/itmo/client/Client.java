@@ -24,6 +24,8 @@ public class Client {
                 String commandName = ask.askCommand(ReaderManager.getHandler());
                 HumanBeing human = ask.askInputManager(commandName, ReaderManager.getHandler());
 //            Response response = serverAPI.executeCommand(data);
+            } catch (NullPointerException e) {
+                ReaderManager.returnOnPreviousReader();
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 // если команда введена неверно
