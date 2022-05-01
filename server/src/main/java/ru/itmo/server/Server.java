@@ -14,16 +14,17 @@ import java.nio.charset.StandardCharsets;
 
 public class Server {
     private static final Logger log = LogManager.getLogger(ru.itmo.server.ServerLauncher.class.getName());
-    private HandleCommands commandManager;
+    private final HandleCommands commandManager = new HandleCommands();
     private Response response;
 
     public void serverStart() {
         try {
             ServerSocket serverSocket = new ServerSocket();
             serverSocket.bind(new InetSocketAddress(65100));
+            log.info("Сервер запущен");
 
             while (!serverSocket.isClosed()) {
-                Socket socket = serverSocket.accept();
+                 Socket socket = serverSocket.accept();
 
                 //получение реквеста от клиента
                 byte[] buffer = new byte[4096];
@@ -35,7 +36,8 @@ public class Server {
 
                 //обработка реквеста
                 if (!request.getCommand().equalsIgnoreCase("exit")) {
-                    commandManager.handle(request);
+                    // todo NullPointerException
+                    response = commandManager.handle(request);
                 } else {
                     socket.close();
                     serverSocket.close();

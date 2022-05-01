@@ -50,7 +50,7 @@ public class ServerAPIImpl implements ServerAPI {
         byte[] responseBytes = new byte[amount];
         System.arraycopy(buffer, 0, responseBytes, 0, amount);
 
-        socket.close();
+//        socket.close();
 
         String json = new String(responseBytes, StandardCharsets.UTF_8);
         return Response.fromJson(json);
