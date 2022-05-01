@@ -6,6 +6,7 @@ import ru.itmo.client.to_server.ServerAPI;
 import ru.itmo.client.to_server.ServerAPIImpl;
 import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.messages.MessageManager;
+import ru.itmo.common.model.HumanBeing;
 import ru.itmo.common.model.Pair;
 
 public class Client {
@@ -14,18 +15,20 @@ public class Client {
 
     // todo получать порт и хост здесь
     public void start() {
-        String serverHost = "localhost";
-        int serverPort = 65100;
-        ServerAPI serverAPI = new ServerAPIImpl(serverHost, serverPort);
+//        String serverHost = "localhost";
+//        int serverPort = 65100;
+//        ServerAPI serverAPI = new ServerAPIImpl(serverHost, serverPort);
 
         while(true) {
             try {
-                Pair data = ask.askInputManager(ReaderManager.getHandler());
+                String commandName = ask.askCommand(ReaderManager.getHandler());
+                HumanBeing human = ask.askInputManager(commandName, ReaderManager.getHandler());
 //            Response response = serverAPI.executeCommand(data);
             } catch (RuntimeException e) {
                 e.printStackTrace();
+                // если команда введена неверно
             } catch (WrongArgumentException e) {
-                msg.printWarningMessage(e);
+                msg.printErrorMessage(e);
             }
 //        if(response.status == Response.Status.OK) {
 //            System.out.println("Ура ура! Получилось!");

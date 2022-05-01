@@ -6,10 +6,10 @@ import ru.itmo.common.messages.MessageManager;
 public class ClientLauncher {
 
     public static void main(String[] args) {
-        // Запрос на включение дружественного интерфейса
-        new MessageManager().turnOnFriendly();
         // Включение считывание с консоли
         ReaderManager.turnOnConsole();
+        // Запрос на включение дружественного интерфейса
+        new MessageManager().turnOnFriendly();
         // Новый клиент
         Client client = new Client();
         //Запускаем логику клиента

@@ -22,23 +22,19 @@ public class AskInput {
      * соответствует полю, запрашиваемому в данной команде, то происходит вставка запрошенного значения
      * @param in
      */
-    public Pair askInputManager(InputHandler in) throws WrongArgumentException{
-        CommandType commandType = null;
-        try {
-            // запрос команды
-            commandType = askCommand(in);
-        } catch(NullPointerException e) {
-            ReaderManager.returnOnPreviousReader();
-            throw new WrongArgumentException(TypeOfError.END_OF_FILE);
-        }
-        // новый экземпляр класса HumanBeing - newHuman
+    public HumanBeing askInputManager(String commandName, InputHandler in) throws WrongArgumentException{
         HumanBeing newHuman = new HumanBeing();
-        // итератор для перемещения по нужным для команды методам
-        Iterator<String> iterator = Arrays.stream(commandType.getCommandFields()).iterator();
+        CommandType commandType = CommandType.valueOf(commandName);
+        if(Objects.equals(commandType, "askFileName")) {
+            ReaderManager.turnOnFile(askFileName(in));
+            throw new WrongArgumentException(TypeOfError.SWITCH_READER);
+        }
         try {
+            // итератор для перемещения по нужным для команды методам
+            Iterator<String> iterator = Arrays.stream(commandType.getCommandFields()).iterator();
             if(iterator.hasNext()) {
                 // название нужного для запроса поля в массиве энама выбранной команды
-                String commandName = iterator.next();
+                commandName = iterator.next();
                 // цикл foreach для полей newHuman
                 for (Field fields : newHuman.getClass().getDeclaredFields()) {
                     // название нынешнего поля newHuman
@@ -60,35 +56,30 @@ public class AskInput {
                         else break;
                     }
                 }
-                if(Objects.equals(commandName, "askFileName")) {
-                    ReaderManager.turnOnFile(askFileName(in));
-                    throw new WrongArgumentException(TypeOfError.SWITCH_READER);
-                }
             }
         } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            e.printStackTrace();
+            // здесь считаю строки
+            throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
         }
-        return new Pair(commandType.name(), newHuman);
+        return newHuman;
     }
     /**
      * Запрашивает ввод команды и валидирует введённую пользователем строку
      * @param in - тип считывания (с консоли или с файла)
      * @return индекс команды, если она была найдена - иначе запрашивает повторный ввод
      */
-    private CommandType askCommand(InputHandler in) {
-        CommandType input = null;
-        while(input == null) {
+    public String askCommand(InputHandler in) throws WrongArgumentException {
+        do {
             msg.printMessage("команду");
             try {
-                input = isCorrectCommand(in.readInput());
+                return isCorrectCommand(in.readInput()).name();
             } catch (IOException e) {
 
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
-                input = null;
             }
-        }
-        return input;
+        } while (MessageManager.isFriendlyInterface());
+        throw new WrongArgumentException(TypeOfError.IGNORE_COMMAND);
     }
 
     /**
@@ -96,218 +87,197 @@ public class AskInput {
      * @param in - тип считывания (с консоли или с файла)
      * @return поле, если оно было введено верно
      */
-    private int askId(InputHandler in) {
-        int input = -1;
-        while(input == -1) {
+    private Integer askId(InputHandler in) throws WrongArgumentException {
+        do {
             msg.printMessage("id");
             try {
-                input = isCorrectInteger(in.readInput(), 0);
+                return isCorrectInteger(in.readInput(), 0);
             } catch(IOException e) {
 
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
-                input = -1;
             }
-        }
-        return input;
+        } while(MessageManager.isFriendlyInterface());
+        throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
     }
 
-    private String askName(InputHandler in) {
-        String name = null;
-        while (name == null) {
+    private String askName(InputHandler in) throws WrongArgumentException {
+        do {
             msg.printMessage("имя");
             try {
-                name = in.readInput();
-                if(name.isEmpty()) throw new WrongArgumentException(TypeOfError.EMPTY);
+                return isCorrectString(in.readInput());
             } catch (IOException e) {
 
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
-                name = null;
             }
-        }
-        return name;
+        } while (MessageManager.isFriendlyInterface());
+        throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
     }
 
-    private String askSoundtrackName(InputHandler in) {
-        String name = null;
-        while (name == null) {
+    private String askSoundtrackName(InputHandler in) throws WrongArgumentException {
+        do {
             msg.printMessage("саундтрек");
             try {
-                name = in.readInput();
-                if(name.isEmpty()) throw new WrongArgumentException(TypeOfError.EMPTY);
+                return isCorrectString(in.readInput());
             } catch (IOException e) {
 
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
-                name = null;
             }
-        }
-        return name;
+        } while (MessageManager.isFriendlyInterface());
+        throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
     }
 
-    private Long askMinutesOfWaiting(InputHandler in) {
-        Long minutes = null;
-        while (minutes == null) {
+    private Long askMinutesOfWaiting(InputHandler in) throws WrongArgumentException {
+        do {
             msg.printMessage("минуты");
             try {
-                minutes = isCorrectLong(in.readInput(), -1);
+                return isCorrectLong(in.readInput(), -1);
             } catch (IOException e) {
 
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
-                minutes = null;
             }
-        }
-        return minutes;
+        } while (MessageManager.isFriendlyInterface());
+        throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
     }
 
-    private int askImpactSpeed(InputHandler in) {
-        int speed = -1;
-        while(speed == -1) {
+    private int askImpactSpeed(InputHandler in) throws WrongArgumentException {
+        do {
             msg.printMessage("скорость");
             try {
-                speed = isCorrectInteger(in.readInput(), -1);
+                return isCorrectInteger(in.readInput(), -1);
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
-                speed = -1;
             } catch (IOException e) {
 
             }
-        }
-        return speed;
+        } while(MessageManager.isFriendlyInterface());
+        throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
     }
 
-    private Boolean askRealHero(InputHandler in) {
-        Boolean realHero = null;
-        while (realHero == null) {
+    private Boolean askRealHero(InputHandler in) throws WrongArgumentException {
+        do {
             msg.printMessage("статус геройства");
             try {
-                realHero = toBoolean(in.readInput(), false);
+                return toBoolean(in.readInput(), false);
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
-                realHero = null;
             } catch (IOException e) {
 
             }
-        }
-        return realHero;
+        } while (MessageManager.isFriendlyInterface());
+        throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
     }
 
-    private Boolean askHasToothpick(InputHandler in) {
-        Boolean realHero = null;
-        boolean flag = true;
-        while (flag) {
+    private Boolean askHasToothpick(InputHandler in) throws WrongArgumentException {
+        do {
             msg.printMessage("наличие зубочистки");
             try {
-                realHero = toBoolean(in.readInput(), true);
-                flag = false;
+                return toBoolean(in.readInput(), true);
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
-                flag = true;
             } catch (IOException e) {
 
             }
-        }
-        return realHero;
+        } while (MessageManager.isFriendlyInterface());
+        throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
     }
 
-    private Coordinates askCoordinates(InputHandler in) {
+    private Coordinates askCoordinates(InputHandler in) throws WrongArgumentException {
         msg.printMessage("местоположение");
-        int x = 0;
-        boolean flag = true;
-        while(flag) {
+        return new Coordinates(askX(in), askY(in));
+    }
+    private int askX(InputHandler in) throws WrongArgumentException {
+        do {
             msg.printMessage("координату x");
             try {
-                x = isCorrectInteger(in.readInput());
-                flag = false;
+                return isCorrectInteger(in.readInput());
             } catch(WrongArgumentException e) {
                 msg.printErrorMessage(e);
-                flag = true;
             } catch (IOException e) {
 
             }
-        }
-        Float y = null;
-        flag = true;
-        while(flag) {
+        } while(MessageManager.isFriendlyInterface());
+        throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
+    }
+    private Float askY(InputHandler in) throws WrongArgumentException {
+        do {
             msg.printMessage("координату y");
             try {
-                y = isCorrectFloat(in.readInput(), -188);
-                flag = false;
+                return isCorrectFloat(in.readInput(), -188);
             } catch(WrongArgumentException e) {
                 msg.printErrorMessage(e);
-                flag = true;
             } catch (IOException e) {
 
             }
         }
-        return new Coordinates(x, y);
+        while(MessageManager.isFriendlyInterface());
+        throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
     }
 
-    private Mood askMood(InputHandler in) {
-        Mood mood = null;
-        boolean flag = true;
-        while (flag) {
+    private Mood askMood(InputHandler in) throws WrongArgumentException {
+        do {
             msg.printMessage("состояние");
             try {
-                mood = isCorrectMood(in.readInput());
-                flag = false;
+                return isCorrectMood(in.readInput());
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
-                flag = true;
             } catch (IOException e) {
 
             }
         }
-        return mood;
+        while (MessageManager.isFriendlyInterface());
+        throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
     }
 
-    private Car askCar(InputHandler in) {
+    private Car askCar(InputHandler in) throws WrongArgumentException {
         msg.printMessage("данные о машине персонажа");
-        String carName = null;
-        boolean flag = true;
-        while(flag) {
+        return new Car(askCarName(in), isCool(in));
+    }
+    private String askCarName(InputHandler in) throws WrongArgumentException {
+        do {
             msg.printMessage("название машины");
             try {
-                carName = in.readInput();
-                if(carName.isEmpty()) msg.printWarningMessage();
-                flag = false;
+                String input = in.readInput();
+                if(input.isEmpty()) {
+                    msg.printWarningMessage();
+                    return null;
+                } return input;
             } catch (IOException e) {
 
             }
         }
-        boolean cool = false;
-        flag = true;
-        while(flag) {
+        while(MessageManager.isFriendlyInterface());
+        throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
+    }
+    private boolean isCool(InputHandler in) throws WrongArgumentException {
+        do {
             msg.printMessage("степень крутости машины");
             try {
-                cool = toBoolean(in.readInput(), false);
-                flag = false;
+                return toBoolean(in.readInput(), false);
             } catch(WrongArgumentException e) {
                 msg.printErrorMessage(e);
-                flag = true;
             } catch (IOException e) {
 
             }
-        }
-        return new Car(carName, cool);
+        } while(MessageManager.isFriendlyInterface());
+        throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
     }
-
-    private BufferedReader askFileName(InputHandler in) {
-        FileReader fileInput = null;
-        while(fileInput == null) {
+    private BufferedReader askFileName(InputHandler in) throws WrongArgumentException {
+        do {
             msg.printMessage("путь до файла");
             try {
-                fileInput = isCorrectFile(in.readInput());
+                return new BufferedReader(isCorrectFile(in.readInput()));
             } catch (IOException e) {
-//                ReaderManager.returnOnPreviousReader();
-//                throw new EndException("Произошла ошибка, невозможно прочитать данные из файла.\n");
+
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
             }
         }
-        return new BufferedReader(fileInput);
+        while(MessageManager.isFriendlyInterface());
+        throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
     }
 
     /**
@@ -329,6 +299,10 @@ public class AskInput {
         else {
             throw new WrongArgumentException(TypeOfError.UNKNOWN);
         }
+    }
+    private String isCorrectString(String input) throws WrongArgumentException {
+        if(input.isEmpty()) throw new WrongArgumentException(TypeOfError.EMPTY);
+        return input;
     }
 
     /**

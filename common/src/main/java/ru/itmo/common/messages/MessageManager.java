@@ -38,6 +38,10 @@ public class MessageManager {
         friendlyInterface = CONST_FRIENDLY_INTERFACE;
     }
 
+    public static boolean isFriendlyInterface() {
+        return friendlyInterface;
+    }
+
     /**
      * Внутренний метод для вывода сообщения относительно friendlyInterface
      */
@@ -52,6 +56,9 @@ public class MessageManager {
      * @param e - исключение
      */
     public void printErrorMessage(WrongArgumentException e) {
+//        if(friendlyInterface)  {
+//            System.err.println(e.getType().getDescription());
+//        }
         System.err.println(e.getType().getDescription());
     }
 
