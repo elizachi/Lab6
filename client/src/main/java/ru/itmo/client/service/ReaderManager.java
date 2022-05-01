@@ -3,6 +3,7 @@ package ru.itmo.client.service;
 import ru.itmo.client.handlers.ConsoleInputHandler;
 import ru.itmo.client.handlers.FileInputHandler;
 import ru.itmo.client.handlers.InputHandler;
+import ru.itmo.common.messages.MessageManager;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
@@ -24,14 +25,15 @@ public class ReaderManager {
         // добавляем в массив хендлеров, чтобы потом к нему вернуться
         handlers.add(handler);
         // Возврат к дружественному интерфейсу после считывания с файла, если оно было
-        AskInput.returnFriendly();
+        MessageManager.returnFriendly();
+        // Добавляем косоль в список активных вкладок приложения
+        MessageManager.getFileHistory().add("Console");
     }
 
     public static void returnOnPreviousReader() {
         handlers.remove(handlers.size() - 1);
         handler = handlers.get(handlers.size()-1);
-        AskInput.returnFriendly();
-//        AskInput.removeLastHistory();
+        MessageManager.returnFriendly();
     }
 
     /**
@@ -41,6 +43,6 @@ public class ReaderManager {
     public static void turnOnFile(BufferedReader reader) {
         handler = new FileInputHandler(reader);
         handlers.add(handler);
-        AskInput.turnOffFriendly();
+        MessageManager.turnOffFriendly();
     }
 }
