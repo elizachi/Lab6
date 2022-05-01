@@ -26,13 +26,14 @@ public class ReaderManager {
         handlers.add(handler);
         // Возврат к дружественному интерфейсу после считывания с файла, если оно было
         MessageManager.returnFriendly();
+        // Добавляем косоль в список активных вкладок приложения
+        MessageManager.getFileHistory().add("Console");
     }
 
     public static void returnOnPreviousReader() {
         handlers.remove(handlers.size() - 1);
         handler = handlers.get(handlers.size()-1);
         MessageManager.returnFriendly();
-//        AskInput.removeLastHistory();
     }
 
     /**

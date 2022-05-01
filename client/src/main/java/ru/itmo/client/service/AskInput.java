@@ -10,17 +10,17 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
 public class AskInput {
     private final MessageManager msg = new MessageManager();
-    private static final ArrayList<String> fileHistory = new ArrayList<>();
 
-    public static void removeLastElement() {
-        fileHistory.remove(fileHistory.size()-1);
+    public void removeLastElement() {
+        MessageManager.getFileHistory().remove(
+                MessageManager.getFileHistory().size()-1
+        );
     }
 
     /**
@@ -277,7 +277,7 @@ public class AskInput {
             try {
                 String fileName = in.readInput();
                 BufferedReader reader = new BufferedReader(isCorrectFile(fileName));
-                fileHistory.add(fileName);
+                MessageManager.getFileHistory().add(fileName);
                 return reader;
             } catch (IOException e) {
 
@@ -410,7 +410,7 @@ public class AskInput {
 
     private FileReader isCorrectFile(String input) throws WrongArgumentException{
         try {
-            if(fileHistory.contains(input)) throw new WrongArgumentException(TypeOfError.ALREADY_EXECUTED);
+            if(MessageManager.getFileHistory().contains(input)) throw new WrongArgumentException(TypeOfError.ALREADY_EXECUTED);
             return new FileReader(input);
         } catch (FileNotFoundException e) {
             throw new WrongArgumentException(TypeOfError.NOT_FOUND);

@@ -1,13 +1,20 @@
 package ru.itmo.common.messages;
 
+import ru.itmo.common.exceptions.TypeOfError;
 import ru.itmo.common.exceptions.WrongArgumentException;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MessageManager {
     private static boolean CONST_FRIENDLY_INTERFACE;
     private static boolean friendlyInterface;
     private final Scanner scanner = new Scanner(System.in);
+    private static final ArrayList<String> fileHistory = new ArrayList<>();
+
+    public static ArrayList<String> getFileHistory() {
+        return fileHistory;
+    }
 
     /**
      * Включает дружественный интерфейс и запоминает изначальную его настройку
@@ -56,14 +63,18 @@ public class MessageManager {
      * @param e - исключение
      */
     public void printErrorMessage(WrongArgumentException e) {
-//        if(friendlyInterface)  {
-//            System.err.println(e.getType().getDescription());
-//        }
-        System.err.println(e.getType().getDescription());
+        if(e.getType() == TypeOfError.SWITCH_READER && fileHistory.size() == 2)  {
+            printWarningMessage(e);
+        } else if(e.getType() != TypeOfError.SWITCH_READER) {
+            System.err.println("\u001B[37m"+fileHistory.get(fileHistory.size() - 1)
+                    +": \u001B[0m"+e.getType().getDescription());
+        }
     }
 
     public void printWarningMessage() {
-        System.out.println("\u001B[33mВы ввели пустую строку. Поле примет значение null.\u001B[0m");
+        if(friendlyInterface) {
+            System.out.println("\u001B[33mВы ввели пустую строку. Поле примет значение null.\u001B[0m");
+        }
     }
     public void printWarningMessage(WrongArgumentException e) {
         System.out.println("\u001B[33m"+e.getType().getDescription()+"\u001B[0m");

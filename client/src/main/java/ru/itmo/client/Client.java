@@ -23,7 +23,7 @@ public class Client {
 //            Response response = serverAPI.executeCommand(data);
             } catch (NullPointerException e) {
                 ReaderManager.returnOnPreviousReader();
-                AskInput.removeLastElement();
+                ask.removeLastElement();
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 // если команда введена неверно
