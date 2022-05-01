@@ -2,6 +2,7 @@ package ru.itmo.server;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.itmo.common.model.HumanBeing;
 import ru.itmo.common.requests.Request;
 import ru.itmo.common.responses.Response;
 import ru.itmo.server.utility.HandleCommands;
@@ -37,7 +38,8 @@ public class Server {
                 //обработка реквеста
                 if (!request.getCommand().equalsIgnoreCase("exit")) {
                     // todo NullPointerException
-                    response = commandManager.handle(request);
+                    //response = commandManager.handle(request);
+                    response = new Response(Response.Status.OK, request.getArgumentAs(HumanBeing.class));
                 } else {
                     socket.close();
                     serverSocket.close();
