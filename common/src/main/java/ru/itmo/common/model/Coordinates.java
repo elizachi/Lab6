@@ -19,6 +19,18 @@ public class Coordinates {
         return y;
     }
 
+    // это некрасиво но пока пусть будет
+    public int compareTo(Coordinates coord){
+        if (this.getX() > coord.getX()) {
+            return 1;
+        } else if (this.getX() < coord.getX()) {
+            return -1;
+        } else {
+            return this.getY().compareTo(coord.getY());
+        }
+
+    }
+
     @Override
     public String toString() {
         return "Coordinates (" +

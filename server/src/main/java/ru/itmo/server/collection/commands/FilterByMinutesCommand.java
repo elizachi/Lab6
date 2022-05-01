@@ -10,7 +10,7 @@ public class FilterByMinutesCommand implements Command{
     }
 
     @Override
-    public void execute() {
+    public void execute(Object arguments) {
 
     }
 }
