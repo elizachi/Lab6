@@ -7,8 +7,7 @@ import ru.itmo.common.messages.MessageManager;
  * Главный класс, запускающий логику клиента
  */
 public class ClientLauncher {
-
-    public static void main(String[] args) {
+     public static void main(String[] args) {
         // Включение считывание с консоли
         ReaderManager.turnOnConsole();
         // Запрос на включение дружественного интерфейса

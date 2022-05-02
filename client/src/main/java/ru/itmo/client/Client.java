@@ -18,7 +18,6 @@ import java.util.logging.Logger;
  * Класс, содержащий основную логику работы клиента
  */
 public class Client {
-    private final Logger log = Logger.getGlobal();
     private final MessageManager msg = new MessageManager();
     private final AskInput ask = new AskInput();
 

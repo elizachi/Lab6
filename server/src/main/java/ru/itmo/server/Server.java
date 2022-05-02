@@ -1,17 +1,13 @@
 package ru.itmo.server;
 
 import ru.itmo.common.commands.CommandType;
-import ru.itmo.common.model.HumanBeing;
+import ru.itmo.common.exceptions.*;
 import ru.itmo.common.requests.Request;
 import ru.itmo.common.responses.Response;
 import ru.itmo.server.utility.HandleCommands;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -27,8 +23,8 @@ public class Server {
     private Response response;
 
     private Selector selector;
-    private InetSocketAddress address;
-    private Set<SocketChannel> session;
+    private final InetSocketAddress address;
+    private final Set<SocketChannel> session;
 
     public Server(String host, int port) {
         this.address = new InetSocketAddress(host, port);
@@ -52,17 +48,17 @@ public class Server {
                 while(keys.hasNext()) {
                     SelectionKey key = (SelectionKey) keys.next();
                     keys.remove();
-                    if(!key.isValid()) continue;
-                    if(key.isAcceptable()) accept(key);
-                    else if(key.isReadable()) {
+                    if(!key.isValid()) {
+                        continue;
+                    } if(key.isAcceptable()) {
+                        accept(key);
+                    } else if(key.isReadable()) {
                         request = read(key);
                         //обработка реквеста
                         if (!request.getCommand().equals(CommandType.EXIT)) {
-                            //response = commandManager.handleRequest(request);
-                            response = new Response(Response.Status.OK, request.getArgumentAs(HumanBeing.class));
+                            response = commandManager.handleRequest(request);
                         } else {
-//                          server.close();
-//                          serverSocket.close();
+                            serverSocketChannel.close();
                             response = new Response(Response.Status.SERVER_EXIT, "Сервер завершает свою работу.");
                             commandManager.exit();
                         }
@@ -71,7 +67,7 @@ public class Server {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | WrongArgumentException e) {
             System.err.println("Сервер завершает свою работу... :(");
             System.exit(0);
         }
@@ -90,7 +86,7 @@ public class Server {
         }
     }
 
-    private Request read(SelectionKey key) {
+    private Request read(SelectionKey key) throws WrongArgumentException {
         try {
             SocketChannel channel = (SocketChannel) key.channel();
             ByteBuffer byteBuffer = ByteBuffer.allocate(4096);
@@ -109,9 +105,8 @@ public class Server {
             String json = new String(data, StandardCharsets.UTF_8);
             return Request.fromJson(json);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new WrongArgumentException(TypeOfError.CONNECTED_REFUSE);
         }
-        return null;
     }
 
     private void write(SelectionKey key) {

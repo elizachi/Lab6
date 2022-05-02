@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class ArrayDequeDAO implements DAO{
     private ArrayDeque<HumanBeing> humanCollection = new ArrayDeque<>();
-    private FileManager fileManager;
+    private final FileManager fileManager = new FileManager("DAO_COLLECTION_FILEPATH");
     private static int availableId = 0;
     private LocalDateTime initDate;
 
