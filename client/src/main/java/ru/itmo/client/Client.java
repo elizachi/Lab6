@@ -5,6 +5,7 @@ import ru.itmo.client.service.ReaderManager;
 import ru.itmo.client.to_server.ServerAPI;
 import ru.itmo.client.to_server.ServerAPIImpl;
 import ru.itmo.common.commands.CommandType;
+import ru.itmo.common.exceptions.TypeOfError;
 import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.messages.MessageManager;
 import ru.itmo.common.model.HumanBeing;
@@ -46,6 +47,9 @@ public class Client {
                 e.printStackTrace();
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
+                if(e.getType() == TypeOfError.NOT_STARTED) {
+                    System.exit(0);
+                }
             }
 
         }
