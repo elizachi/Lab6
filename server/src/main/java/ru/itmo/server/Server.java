@@ -18,6 +18,7 @@ import java.util.Set;
 
 public class Server {
     private final HandleCommands commandManager = new HandleCommands();
+    // todo убрать response
     private Response response;
 
     private Selector selector;
@@ -46,21 +47,25 @@ public class Server {
                         accept(key);
                     } else if(key.isReadable()) {
                         //получение реквеста от клиента
-                        request = read(key);
+                        try {
+                            request = read(key);
+                        } catch (WrongArgumentException e) {
+                            key.cancel();
+                            continue;
+                        }
                         //обработка реквеста
                         if (!request.getCommand().equals(CommandType.EXIT)) {
-                            response = commandManager.handleRequest(request);
+                            //отправка респонза клиенту
+//                            write(key, commandManager.handleRequest(request));
                         } else {
                             stopSocketChannel();
                             response = new Response(Response.Status.SERVER_EXIT, "Сервер завершает свою работу.");
                             commandManager.exit();
                         }
-                        //отправка респонза клиенту
-                        write(key);
                     }
                 }
             }
-        } catch (IOException | WrongArgumentException e) {
+        } catch(IOException e) {
             System.err.println("Сервер завершает свою работу... :(");
             System.exit(0);
         }
@@ -112,6 +117,12 @@ public class Server {
         }
     }
 
+    /**
+     * Получение запроса от клиента
+     * @param key
+     * @return
+     * @throws WrongArgumentException
+     */
     private Request read(SelectionKey key) throws WrongArgumentException {
         try {
             SocketChannel channel = (SocketChannel) key.channel();
@@ -134,18 +145,24 @@ public class Server {
                     + request.getCommand().name().toLowerCase());
             return request;
         } catch (IOException e) {
+            ServerLauncher.log.error("Соединение клиента и сервера было принудительно разорвано");
             throw new WrongArgumentException(TypeOfError.CONNECTED_REFUSE);
         }
     }
 
-    private void write(SelectionKey key) {
+    /**
+     * Отправка результата выполнения запроса клиенту
+     * @param key
+     */
+    private void write(SelectionKey key, Response response) {
+        ServerLauncher.log.info("Начата отправка результата выполнения запроса клиенту");
         SocketChannel channel = (SocketChannel) key.channel();
         try {
             //отправка респонза клиенту
             channel.write(ByteBuffer.wrap(response.toJson().getBytes(StandardCharsets.UTF_8)));
+            ServerLauncher.log.info("Отправка выполнена успешно");
         } catch (IOException e) {
-            System.err.println("Чота не получилосб...");
-            System.exit(0);
+            ServerLauncher.log.error("Отправка не удалась");
         }
     }
 }

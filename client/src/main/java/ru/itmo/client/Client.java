@@ -34,10 +34,12 @@ public class Client {
                 HumanBeing human = ask.askInputManager(commandType, ReaderManager.getHandler());
                 Response response = serverAPI.executeCommand(commandType, human);
                 if(response.status == Response.Status.OK) {
-                    System.out.println("Ура ура! Получилось!");
+                    System.out.println("Ура ура! Получилось! Команда успешно выполнена.");
                 } else if(response.status == Response.Status.SERVER_EXIT) {
-                    System.out.println("Клиент завершает свою работу");
+                    System.out.println("Клиент завершает свою работу.");
                     System.exit(0);
+                } else if(response.status == Response.Status.ERROR) {
+                    System.out.println("В процессе выполнения данной команды произошла ошибка.");
                 }
             } catch (NullPointerException e) {
                 ReaderManager.returnOnPreviousReader();

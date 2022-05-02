@@ -8,6 +8,7 @@ import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.messages.MessageManager;
 import ru.itmo.common.requests.Request;
 import ru.itmo.common.responses.Response;
+import ru.itmo.server.ServerLauncher;
 import ru.itmo.server.collection.commands.*;
 import ru.itmo.server.collection.dao.ArrayDequeDAO;
 import ru.itmo.server.collection.dao.DAO;
@@ -39,6 +40,7 @@ public class HandleCommands {
     private Response executeCommand(CommandType command, Object commandArgument){
         int commandIndex = command.ordinal();
         commands[commandIndex].execute(commandArgument);
+        ServerLauncher.log.info("Запрос успешно обработан");
         return new Response(Response.Status.OK, commandArgument);
     }
 
