@@ -38,6 +38,8 @@ public class ServerAPIImpl implements ServerAPI {
             return sendToServer(request);
         } catch (ConnectException e) {
             throw new WrongArgumentException(TypeOfError.NOT_STARTED);
+        } catch (SocketException e) {
+            throw new WrongArgumentException(TypeOfError.CONNECTED_REFUSE);
         } catch (IOException e) {
             System.out.println("Похоже, что-то пошло не так...");
             throw new RuntimeException("Pizda");
@@ -59,8 +61,6 @@ public class ServerAPIImpl implements ServerAPI {
         int amount = socket.getInputStream().read(buffer);
         byte[] responseBytes = new byte[amount];
         System.arraycopy(buffer, 0, responseBytes, 0, amount);
-
-//        socket.close();
 
         String json = new String(responseBytes, StandardCharsets.UTF_8);
         return Response.fromJson(json);
