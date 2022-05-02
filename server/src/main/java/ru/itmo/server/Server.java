@@ -7,12 +7,10 @@ import ru.itmo.common.responses.Response;
 import ru.itmo.server.utility.HandleCommands;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,6 +23,7 @@ public class Server {
     private Selector selector;
     private final InetSocketAddress address;
     private final Set<SocketChannel> session;
+    private ServerSocketChannel serverSocketChannel;
 
     public Server(String host, int port) {
         this.address = new InetSocketAddress(host, port);
@@ -32,15 +31,8 @@ public class Server {
     }
 
     public void start() {
+        if(!runSocketChannel()) return;
         try {
-            selector = Selector.open();
-            ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-            serverSocketChannel.bind(address);
-            serverSocketChannel.configureBlocking(false);
-            serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-            ServerLauncher.log.info("Сервер запущен");
-
-            //получение реквеста от клиента
             while(true) {
                 selector.select();
                 Iterator keys = selector.selectedKeys().iterator();
@@ -53,12 +45,13 @@ public class Server {
                     } if(key.isAcceptable()) {
                         accept(key);
                     } else if(key.isReadable()) {
+                        //получение реквеста от клиента
                         request = read(key);
                         //обработка реквеста
                         if (!request.getCommand().equals(CommandType.EXIT)) {
                             response = commandManager.handleRequest(request);
                         } else {
-                            serverSocketChannel.close();
+                            stopSocketChannel();
                             response = new Response(Response.Status.SERVER_EXIT, "Сервер завершает свою работу.");
                             commandManager.exit();
                         }
@@ -73,6 +66,38 @@ public class Server {
         }
     }
 
+    private boolean runSocketChannel() {
+        try {
+            ServerLauncher.log.info("Запуск сервера...");
+            selector = Selector.open();
+            serverSocketChannel = ServerSocketChannel.open();
+            serverSocketChannel.bind(address);
+            serverSocketChannel.configureBlocking(false);
+            serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+            ServerLauncher.log.info("Сервер успешно запущен");
+            return true;
+        } catch (ClosedChannelException e) {
+            ServerLauncher.log.fatal("Сервер был принудительно закрыт");
+            return false;
+        } catch(BindException e) {
+            ServerLauncher.log.fatal("На исходных хосте и порту уже запущен сервер");
+            return false;
+        } catch (IOException e) {
+            ServerLauncher.log.fatal("Ошибка запуска сервера");
+            return false;
+        }
+    }
+
+    private void stopSocketChannel() {
+        try {
+            ServerLauncher.log.info("Закрытие сервера...");
+            serverSocketChannel.close();
+            ServerLauncher.log.info("Сервер успешно закрыт");
+        } catch (IOException e) {
+            ServerLauncher.log.error("Ошибка закрытия сервера");
+        }
+    }
+
     private void accept(SelectionKey key) {
         try {
             ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
@@ -80,9 +105,10 @@ public class Server {
             channel.configureBlocking(false);
             channel.register(selector, SelectionKey.OP_READ);
             session.add(channel);
-            ServerLauncher.log.info("Клиент "+channel.socket().getRemoteSocketAddress()+ " зашёл на сервер");
+            ServerLauncher.log.info("Клиент "+channel.socket().getRemoteSocketAddress()+
+                    " успешно подсоединился к серверу");
         } catch (IOException e) {
-            e.printStackTrace();
+            ServerLauncher.log.error("Ошибка селектора");
         }
     }
 
@@ -103,7 +129,10 @@ public class Server {
             byte[] data = new byte[amount];
             System.arraycopy(byteBuffer.array(), 0, data, 0, amount);
             String json = new String(data, StandardCharsets.UTF_8);
-            return Request.fromJson(json);
+            Request request = Request.fromJson(json);
+            ServerLauncher.log.info("Запрос на выполнение команды "
+                    + request.getCommand().name().toLowerCase());
+            return request;
         } catch (IOException e) {
             throw new WrongArgumentException(TypeOfError.CONNECTED_REFUSE);
         }
