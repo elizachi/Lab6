@@ -18,7 +18,7 @@ public class HandleCommands {
     private static final Logger log = LogManager.getLogger(ru.itmo.server.ServerLauncher.class.getName());
     private final MessageManager msg = new MessageManager();
 //    private final String commandName;
-//    private HumanBeing humanBeing;
+//    private HumanBeing human;
     private static DAO database;
     private static final FileManager fileManager = new FileManager("DAO_COLLECTION_FILEPATH");
 

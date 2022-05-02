@@ -8,6 +8,10 @@ import ru.itmo.common.messages.MessageManager;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 
+/**
+ * Класс, отвечающий за переключение типа считывания и
+ * отслеживания истории вызываемых классов считывания
+ */
 public class ReaderManager {
     private static InputHandler handler;
     private static final ArrayList<InputHandler> handlers = new ArrayList<>();
@@ -30,6 +34,9 @@ public class ReaderManager {
         MessageManager.getFileHistory().add("Console");
     }
 
+    /**
+     * Возврат к предыдущему типы считывания
+     */
     public static void returnOnPreviousReader() {
         handlers.remove(handlers.size() - 1);
         handler = handlers.get(handlers.size()-1);

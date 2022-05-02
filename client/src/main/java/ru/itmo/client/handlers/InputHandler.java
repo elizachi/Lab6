@@ -2,9 +2,9 @@ package ru.itmo.client.handlers;
 
 import java.io.IOException;
 
+/**
+ * Абстрактный класс-родитель для классов с разными типами считывания
+  */
 public abstract class InputHandler {
-    /**
-     * Абстрактный метод read, переопределяемый для двух разных типов считывания - с консоли и с файла
-     */
     public abstract String readInput() throws IOException;
 }

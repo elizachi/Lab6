@@ -14,6 +14,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
+/**
+ * Класс, запрашивающий пользовательский ввод и валидирующих полученные значения
+ * Работает для всех типов считывания
+ */
 public class AskInput {
     private final MessageManager msg = new MessageManager();
 
@@ -22,7 +26,8 @@ public class AskInput {
                 MessageManager.getFileHistory().size()-1
         );
     }
-
+    // todo дописать исключение ioexception
+    // todo потестить входные данные с разными регистрами
     /**
      * Создает новый экземпляр класса HumanBeing с пустыми полями. Проходится по полям класса, и если поле класса
      * соответствует полю, запрашиваемому в данной команде, то происходит вставка запрошенного значения
@@ -89,7 +94,7 @@ public class AskInput {
     }
 
     /**
-     * Запрашивает ввод полей и валидирует введённое пользователем значение
+     * Следующие методы запрашивают ввод полей и валидируют введённое пользователем значение
      * @param in - тип считывания (с консоли или с файла)
      * @return поле, если оно было введено верно
      */
@@ -290,9 +295,10 @@ public class AskInput {
     }
 
     /**
-     * Внутренний метод для более удобного преобразования String в Boolean
-     * @param input строка, которая будет преобразовываться в Boolean
-     * @return true (если в строке присутствует true, yes, да вне зависимости от регистра), false (если в строке присутствует false, no, нет или если строка пустая)
+     * Внутренние вспомогательные методы для упрощения проверки введённых данных
+     * @param input строка, введённая пользователем
+     * @return true (если в строке присутствует true, yes, да вне зависимости от регистра),
+     * false (если в строке присутствует false, no, нет или если строка пустая)
      */
     private Boolean toBoolean(String input, boolean hasNull) throws WrongArgumentException {
         if (input.equals("true") || input.equals("yes") || input.equals("да")) {
@@ -417,6 +423,7 @@ public class AskInput {
         }
     }
 }
+// энам с переменными-командами. Для каждой команды определены методы, которые нужно вызывать для неё.
 enum CommandType {
     ADD(new String[]{"askName", "askSoundtrackName", "askMinutesOfWaiting",
             "askImpactSpeed", "askRealHero", "askHasToothpick", "askCoordinates", "askMood", "askCar"}),
