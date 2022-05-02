@@ -2,12 +2,13 @@ package ru.itmo.common.requests;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import ru.itmo.common.commands.CommandType;
 
 public class Request {
-    public final String command;
+    public final CommandType command;
     public final Object argument;
 
-    public Request(String command, Object argument) {
+    public Request(CommandType command, Object argument) {
         this.command = command;
         this.argument = new Gson().toJson(argument);
     }
@@ -29,7 +30,7 @@ public class Request {
         return new Gson().toJson(this);
     }
 
-    public String getCommand() {
+    public CommandType getCommand() {
         return command;
     }
 }

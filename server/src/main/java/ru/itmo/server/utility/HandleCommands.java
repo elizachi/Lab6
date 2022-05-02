@@ -2,10 +2,10 @@ package ru.itmo.server.utility;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.itmo.common.commands.CommandType;
 import ru.itmo.common.exceptions.TypeOfError;
 import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.messages.MessageManager;
-import ru.itmo.common.model.HumanBeing;
 import ru.itmo.common.requests.Request;
 import ru.itmo.common.responses.Response;
 import ru.itmo.server.collection.commands.*;
@@ -44,17 +44,17 @@ public class HandleCommands {
         return executeCommand(request.getCommand(), request.getArgumentAs(request.argument.getClass()));
     }
 
-    private Response executeCommand(String commandName, Object commandArgument){
-        try {
-            CommandType cmd = isCorrectCommand(commandName);
-            //todo execute commands somehow...
-            return new Response(Response.Status.OK, commandArgument);
-        } catch (WrongArgumentException e) {
-            msg.printErrorMessage(e);
-            return new Response(Response.Status.ERROR, commandArgument);
-        }
+    private Response executeCommand(CommandType command, Object commandArgument){
+//        try {
+//            return new Response(Response.Status.OK, commandArgument);
+//        } catch (WrongArgumentException e) {
+//            msg.printErrorMessage(e);
+//            return new Response(Response.Status.ERROR, commandArgument);
+//        }
+        //todo execute commands somehow...
+        return new Response(Response.Status.OK, commandArgument);
     }
-
+ // todo убрать, тк скорее всего не понадобится, но пока оставлю, чтобы не утерять
     private CommandType isCorrectCommand(String input) throws WrongArgumentException {
         try {
             return CommandType.valueOf(input.toUpperCase());
@@ -83,39 +83,5 @@ public class HandleCommands {
             new ShowCommand(database),
             new UpdateCommand(database),
             new ExitCommand()
-    };
-
-    /**
-     * enum of commands
-     */
-    enum CommandType {
-        ADD(new String[]{"askName", "askSoundtrackName", "askMinutesOfWaiting",
-                "askImpactSpeed", "askRealHero", "askHasToothpick", "askCoordinates", "askMood", "askCar"}),
-        CLEAR(new String[]{}),
-        EXECUTE_SCRIPT(new String[]{"askFileName"}),
-        EXIT(new String[]{}),
-        FILTER_BY_MINUTES_OF_WAITING(new String[]{"askMinutesOfWaiting"}),
-        FILTER_GREATER_THAN_IMPACT_SPEED(new String[]{"askImpactSpeed"}),
-        HEAD(new String[]{}),
-        HELP(new String[]{}),
-        INFO(new String[]{}),
-        PRINT_UNIQUE_IMPACT_SPEED(new String[]{}),
-        REMOVE_BY_ID(new String[]{"askId"}),
-        REMOVE_GREATER(new String[]{"askName", "askSoundtrackName", "askMinutesOfWaiting",
-                "askImpactSpeed", "askRealHero", "askHasToothpick", "askCoordinates", "askMood", "askCar"}),
-        REMOVE_HEAD(new String[]{}),
-        SHOW(new String[]{}),
-        UPDATE(new String[]{"askId", "askName", "askSoundtrackName", "askMinutesOfWaiting",
-                "askImpactSpeed", "askRealHero", "askHasToothpick", "askCoordinates", "askMood", "askCar"});
-
-        private final String[] commandFields;
-
-        CommandType(String[] fields) {
-            this.commandFields = fields;
-        }
-
-        public String[] getCommandFields() {
-            return this.commandFields;
-        }
     };
 }

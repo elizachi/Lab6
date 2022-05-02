@@ -4,6 +4,7 @@ import ru.itmo.client.service.AskInput;
 import ru.itmo.client.service.ReaderManager;
 import ru.itmo.client.to_server.ServerAPI;
 import ru.itmo.client.to_server.ServerAPIImpl;
+import ru.itmo.common.commands.CommandType;
 import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.messages.MessageManager;
 import ru.itmo.common.model.HumanBeing;
@@ -25,9 +26,9 @@ public class Client {
 
         while(true) {
             try {
-                String commandName = ask.askCommand(ReaderManager.getHandler());
-                HumanBeing human = ask.askInputManager(commandName, ReaderManager.getHandler());
-                Response response = serverAPI.executeCommand(commandName, human);
+                CommandType commandType = ask.askCommand(ReaderManager.getHandler());
+                HumanBeing human = ask.askInputManager(commandType, ReaderManager.getHandler());
+                Response response = serverAPI.executeCommand(commandType, human);
                 if(response.status == Response.Status.OK) {
                     System.out.println("Ура ура! Получилось!");
                 } else if(response.status == Response.Status.SERVER_EXIT) {

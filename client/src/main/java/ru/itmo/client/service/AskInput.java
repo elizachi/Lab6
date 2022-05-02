@@ -1,8 +1,8 @@
 package ru.itmo.client.service;
 
 import ru.itmo.client.handlers.InputHandler;
-import ru.itmo.common.exceptions.TypeOfError;
-import ru.itmo.common.exceptions.WrongArgumentException;
+import ru.itmo.common.commands.CommandType;
+import ru.itmo.common.exceptions.*;
 import ru.itmo.common.messages.MessageManager;
 import ru.itmo.common.model.*;
 
@@ -33,15 +33,14 @@ public class AskInput {
      * соответствует полю, запрашиваемому в данной команде, то происходит вставка запрошенного значения
      * @param in
      */
-    public HumanBeing askInputManager(String commandName, InputHandler in) throws WrongArgumentException{
+    public HumanBeing askInputManager(CommandType commandType, InputHandler in) throws WrongArgumentException{
         HumanBeing newHuman = new HumanBeing();
-        CommandType commandType = CommandType.valueOf(commandName);
         try {
             // итератор для перемещения по нужным для команды методам
             Iterator<String> iterator = Arrays.stream(commandType.getCommandFields()).iterator();
             if(iterator.hasNext()) {
                 // название нужного для запроса поля в массиве энама выбранной команды
-                commandName = iterator.next();
+                String commandName = iterator.next();
                 // цикл foreach для полей newHuman
                 for (Field fields : newHuman.getClass().getDeclaredFields()) {
                     // название нынешнего поля newHuman
@@ -79,11 +78,11 @@ public class AskInput {
      * @param in - тип считывания (с консоли или с файла)
      * @return индекс команды, если она была найдена - иначе запрашивает повторный ввод
      */
-    public String askCommand(InputHandler in) throws WrongArgumentException {
+    public CommandType askCommand(InputHandler in) throws WrongArgumentException {
         do {
             msg.printMessage("команду");
             try {
-                return isCorrectCommand(in.readInput()).name();
+                return isCorrectCommand(in.readInput());
             } catch (IOException e) {
 
             } catch (WrongArgumentException e) {
@@ -423,34 +422,3 @@ public class AskInput {
         }
     }
 }
-// энам с переменными-командами. Для каждой команды определены методы, которые нужно вызывать для неё.
-enum CommandType {
-    ADD(new String[]{"askName", "askSoundtrackName", "askMinutesOfWaiting",
-            "askImpactSpeed", "askRealHero", "askHasToothpick", "askCoordinates", "askMood", "askCar"}),
-    CLEAR(new String[]{}),
-    EXECUTE_SCRIPT(new String[]{"askFileName"}),
-    EXIT(new String[]{}),
-    FILTER_BY_MINUTES_OF_WAITING(new String[]{"askMinutesOfWaiting"}),
-    FILTER_GREATER_THAN_IMPACT_SPEED(new String[]{"askImpactSpeed"}),
-    HEAD(new String[]{}),
-    HELP(new String[]{}),
-    INFO(new String[]{}),
-    PRINT_UNIQUE_IMPACT_SPEED(new String[]{}),
-    REMOVE_BY_ID(new String[]{"askId"}),
-    REMOVE_GREATER(new String[]{"askName", "askSoundtrackName", "askMinutesOfWaiting",
-            "askImpactSpeed", "askRealHero", "askHasToothpick", "askCoordinates", "askMood", "askCar"}),
-    REMOVE_HEAD(new String[]{}),
-    SHOW(new String[]{}),
-    UPDATE(new String[]{"askId", "askName", "askSoundtrackName", "askMinutesOfWaiting",
-            "askImpactSpeed", "askRealHero", "askHasToothpick", "askCoordinates", "askMood", "askCar"});
-
-    private final String[] commandFields;
-
-    CommandType(String[] fields) {
-        this.commandFields = fields;
-    }
-
-    public String[] getCommandFields() {
-        return this.commandFields;
-    }
-};
