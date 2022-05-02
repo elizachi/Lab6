@@ -1,5 +1,6 @@
 package ru.itmo.client.to_server;
 
+import ru.itmo.common.commands.CommandType;
 import ru.itmo.common.model.HumanBeing;
 import ru.itmo.common.requests.Request;
 import ru.itmo.common.responses.Response;
@@ -24,7 +25,7 @@ public class ServerAPIImpl implements ServerAPI {
     /**
      * Получает команду и данные для ее исполнения
      */
-    public Response executeCommand(String command, HumanBeing human) {
+    public Response executeCommand(CommandType command, HumanBeing human) {
         Request request = new Request(
                 command,
                 human
