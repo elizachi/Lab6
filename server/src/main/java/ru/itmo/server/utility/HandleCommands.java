@@ -25,6 +25,7 @@ public class HandleCommands {
     //загрузка коллекции из файла для дальнейшей работы
     static {
         database = new ArrayDequeDAO(fileManager.readCollection());
+        database.setAvailableId();
     }
 
 //    public HandleCommands(String commandName, HumanBeing humanBeing){
@@ -40,20 +41,21 @@ public class HandleCommands {
         }
     }
 
-    public Response handle(Request request) {
+    public Response handleRequest(Request request) {
         return executeCommand(request.getCommand(), request.getArgumentAs(request.argument.getClass()));
     }
 
     private Response executeCommand(CommandType command, Object commandArgument){
-//        try {
-//            return new Response(Response.Status.OK, commandArgument);
-//        } catch (WrongArgumentException e) {
-//            msg.printErrorMessage(e);
-//            return new Response(Response.Status.ERROR, commandArgument);
-//        }
-        //todo execute commands somehow...
-        return new Response(Response.Status.OK, commandArgument);
+        try {
+            int commandIndex = command.ordinal();
+            commands[commandIndex].execute(commandArgument);
+            return new Response(Response.Status.OK, commandArgument);
+        } catch (WrongArgumentException e) {
+            return new Response(Response.Status.ERROR, commandArgument);
+        }
     }
+
+
  // todo убрать, тк скорее всего не понадобится, но пока оставлю, чтобы не утерять
     private CommandType isCorrectCommand(String input) throws WrongArgumentException {
         try {

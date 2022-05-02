@@ -11,6 +11,6 @@ public class HeadCommand implements Command{
 
     @Override
     public void execute(Object arguments) {
-
+        arrayDequeDAO.getHead();
     }
 }

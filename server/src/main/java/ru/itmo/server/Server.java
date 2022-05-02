@@ -44,6 +44,7 @@ public class Server {
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             ServerLauncher.log.info("Сервер запущен");
 
+            //получение реквеста от клиента
             while(true) {
                 selector.select();
                 Iterator keys = selector.selectedKeys().iterator();
@@ -57,7 +58,7 @@ public class Server {
                         request = read(key);
                         //обработка реквеста
                         if (!request.getCommand().equals(CommandType.EXIT)) {
-                            //response = commandManager.handle(request);
+                            //response = commandManager.handleRequest(request);
                             response = new Response(Response.Status.OK, request.getArgumentAs(HumanBeing.class));
                         } else {
 //                          server.close();

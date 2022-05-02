@@ -11,6 +11,6 @@ public class RemoveHeadCommand implements Command{
 
     @Override
     public void execute(Object arguments) {
-
+        arrayDequeDAO.remove(arrayDequeDAO.getHead().getId());
     }
 }

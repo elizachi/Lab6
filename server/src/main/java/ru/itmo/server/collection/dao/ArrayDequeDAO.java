@@ -5,10 +5,8 @@ import ru.itmo.server.utility.FileManager;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ArrayDequeDAO implements DAO{
     private ArrayDeque<HumanBeing> humanCollection = new ArrayDeque<>();
@@ -39,7 +37,7 @@ public class ArrayDequeDAO implements DAO{
     }
 
     /**
-     * override methods
+     * override DAO methods
      */
     @Override
     public void clearCollection() {
@@ -55,8 +53,29 @@ public class ArrayDequeDAO implements DAO{
     }
 
     @Override
-    public void update(int id, HumanBeing human) {
+    public void update(int id, HumanBeing updatedHuman) {
+        HumanBeing existedHuman = get(id);
+        if(existedHuman != null) {
+            existedHuman.setName(updatedHuman.getName());
+            existedHuman.setSoundtrackName(updatedHuman.getSoundtrackName());
+            existedHuman.setMinutesOfWaiting(updatedHuman.getMinutesOfWaiting());
+            existedHuman.setImpactSpeed(updatedHuman.getImpactSpeed());
+            existedHuman.setRealHero(updatedHuman.isRealHero());
+            existedHuman.setHasToothpick(updatedHuman.isHasToothpick());
+            existedHuman.setCoordinates(updatedHuman.getCoordinates());
+            existedHuman.setMood(updatedHuman.getMood());
+            existedHuman.setCar(updatedHuman.getCar());
+        }
+    }
 
+    @Override
+    public List<?> filterGreaterThanSpeed(int speed){
+        return humanCollection.stream().filter(humanBeing -> humanBeing.getImpactSpeed() > speed).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<?> filterByMinutes(Long minutesOfWaiting) {
+        return humanCollection.stream().filter(humanBeing -> Objects.equals(humanBeing.getMinutesOfWaiting(), minutesOfWaiting)).collect(Collectors.toList());
     }
 
     @Override
@@ -75,6 +94,11 @@ public class ArrayDequeDAO implements DAO{
     @Override
     public HumanBeing get(int id) {
         return humanCollection.stream().filter(humanBeing -> humanBeing.getId() == id).findFirst().orElse(null);
+    }
+
+    @Override
+    public HumanBeing getHead(){
+        return humanCollection.stream().findFirst().orElse(null);
     }
 
     @Override
