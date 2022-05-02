@@ -26,8 +26,6 @@ public class AskInput {
                 MessageManager.getFileHistory().size()-1
         );
     }
-    // todo дописать исключение ioexception
-    // todo потестить входные данные с разными регистрами
     /**
      * Создает новый экземпляр класса HumanBeing с пустыми полями. Проходится по полям класса, и если поле класса
      * соответствует полю, запрашиваемому в данной команде, то происходит вставка запрошенного значения
@@ -84,7 +82,7 @@ public class AskInput {
             try {
                 return isCorrectCommand(in.readInput());
             } catch (IOException e) {
-
+                msg.printErrorMessageIO();
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
             }
@@ -103,7 +101,7 @@ public class AskInput {
             try {
                 return isCorrectInteger(in.readInput(), 0);
             } catch(IOException e) {
-
+                msg.printErrorMessageIO();
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
             }
@@ -117,7 +115,7 @@ public class AskInput {
             try {
                 return isCorrectString(in.readInput());
             } catch (IOException e) {
-
+                msg.printErrorMessageIO();
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
             }
@@ -131,7 +129,7 @@ public class AskInput {
             try {
                 return isCorrectString(in.readInput());
             } catch (IOException e) {
-
+                msg.printErrorMessageIO();
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
             }
@@ -145,7 +143,7 @@ public class AskInput {
             try {
                 return isCorrectLong(in.readInput(), -1);
             } catch (IOException e) {
-
+                msg.printErrorMessageIO();
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
             }
@@ -161,7 +159,7 @@ public class AskInput {
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
             } catch (IOException e) {
-
+                msg.printErrorMessageIO();
             }
         } while(MessageManager.isFriendlyInterface());
         throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
@@ -175,7 +173,7 @@ public class AskInput {
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
             } catch (IOException e) {
-
+                msg.printErrorMessageIO();
             }
         } while (MessageManager.isFriendlyInterface());
         throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
@@ -189,7 +187,7 @@ public class AskInput {
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
             } catch (IOException e) {
-
+                msg.printErrorMessageIO();
             }
         } while (MessageManager.isFriendlyInterface());
         throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
@@ -207,7 +205,7 @@ public class AskInput {
             } catch(WrongArgumentException e) {
                 msg.printErrorMessage(e);
             } catch (IOException e) {
-
+                msg.printErrorMessageIO();
             }
         } while(MessageManager.isFriendlyInterface());
         throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
@@ -220,7 +218,7 @@ public class AskInput {
             } catch(WrongArgumentException e) {
                 msg.printErrorMessage(e);
             } catch (IOException e) {
-
+                msg.printErrorMessageIO();
             }
         }
         while(MessageManager.isFriendlyInterface());
@@ -235,7 +233,7 @@ public class AskInput {
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
             } catch (IOException e) {
-
+                msg.printErrorMessageIO();
             }
         }
         while (MessageManager.isFriendlyInterface());
@@ -256,7 +254,7 @@ public class AskInput {
                     return null;
                 } return input;
             } catch (IOException e) {
-
+                msg.printErrorMessageIO();
             }
         }
         while(MessageManager.isFriendlyInterface());
@@ -270,7 +268,7 @@ public class AskInput {
             } catch(WrongArgumentException e) {
                 msg.printErrorMessage(e);
             } catch (IOException e) {
-
+                msg.printErrorMessageIO();
             }
         } while(MessageManager.isFriendlyInterface());
         throw new WrongArgumentException(TypeOfError.IGNORE_STRING);
@@ -284,7 +282,7 @@ public class AskInput {
                 MessageManager.getFileHistory().add(fileName);
                 return reader;
             } catch (IOException e) {
-
+                msg.printErrorMessageIO();
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
             }
@@ -300,6 +298,7 @@ public class AskInput {
      * false (если в строке присутствует false, no, нет или если строка пустая)
      */
     private Boolean toBoolean(String input, boolean hasNull) throws WrongArgumentException {
+        input = input.toLowerCase();
         if (input.equals("true") || input.equals("yes") || input.equals("да")) {
             return true;
         } else if (input.equals("false") || input.equals("no") || input.equals("нет")) {
@@ -323,7 +322,6 @@ public class AskInput {
      * Функция для проверки валидности введённого целочисленного значения
      * @param input - строка, введённая пользователем
      * @return если строка валидна - возращает целое число, иначе выбрасывает следующее исключение
-     * @throws WrongArgumentException
      */
     private Integer isCorrectInteger(String input) throws WrongArgumentException {
         try {
@@ -340,7 +338,6 @@ public class AskInput {
      * @param input - строка, введённая пользователем
      * @param begin - нижняя граница для данного поля
      * @return если строка валидна - возращает целое число, иначе выбрасывает следующее исключение
-     * @throws WrongArgumentException
      */
     private Integer isCorrectInteger(String input, int begin) throws WrongArgumentException {
         try {
@@ -359,7 +356,6 @@ public class AskInput {
      * @param input - строка, введённая пользователем
      * @param begin - нижняя граница для данного поля
      * @return если строка валидна - возращает целое число, иначе выбрасывает следующее исключение
-     * @throws WrongArgumentException
      */
     private Long isCorrectLong(String input, int begin) throws WrongArgumentException {
         try {
@@ -378,7 +374,6 @@ public class AskInput {
      * @param input - строка, введённая пользователем
      * @param begin - нижняя граница для данного поля
      * @return если строка валидна - возращает целое число, иначе выбрасывает следующее исключение
-     * @throws WrongArgumentException
      */
     private Float isCorrectFloat(String input, int begin) throws WrongArgumentException {
         try {
@@ -415,7 +410,9 @@ public class AskInput {
 
     private FileReader isCorrectFile(String input) throws WrongArgumentException{
         try {
-            if(MessageManager.getFileHistory().contains(input)) throw new WrongArgumentException(TypeOfError.ALREADY_EXECUTED);
+            if(MessageManager.getFileHistory().contains(input)) {
+                throw new WrongArgumentException(TypeOfError.ALREADY_EXECUTED);
+            }
             return new FileReader(input);
         } catch (FileNotFoundException e) {
             throw new WrongArgumentException(TypeOfError.NOT_FOUND);

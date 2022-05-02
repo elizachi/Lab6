@@ -21,8 +21,6 @@ public class Client {
     private final MessageManager msg = new MessageManager();
     private final AskInput ask = new AskInput();
 
-    // todo получать порт и хост здесь
-    // todo убрать вызов стак трейса
     public void start() {
         String serverHost = "localhost";
         int serverPort = 65100;
@@ -45,7 +43,7 @@ public class Client {
                 ReaderManager.returnOnPreviousReader();
                 ask.removeLastElement();
             } catch (RuntimeException e) {
-                e.printStackTrace();
+                System.err.println("Непредвиденная ошибка");
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
                 if(e.getType() == TypeOfError.NOT_STARTED) {

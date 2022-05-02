@@ -71,6 +71,10 @@ public class MessageManager {
         }
     }
 
+    public void printErrorMessageIO() {
+        System.err.println("Ошибка чтения данных из файла");
+    }
+
     public void printWarningMessage() {
         if(friendlyInterface) {
             System.out.println("\u001B[33mВы ввели пустую строку. Поле примет значение null.\u001B[0m");

@@ -1,11 +1,6 @@
 package ru.itmo.server.utility;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import ru.itmo.common.commands.CommandType;
-import ru.itmo.common.exceptions.TypeOfError;
-import ru.itmo.common.exceptions.WrongArgumentException;
-import ru.itmo.common.messages.MessageManager;
 import ru.itmo.common.requests.Request;
 import ru.itmo.common.responses.Response;
 import ru.itmo.server.ServerLauncher;
@@ -59,7 +54,6 @@ public class HandleCommands {
             new RemoveByIdCommand(database),
             new RemoveGreaterCommand(database),
             new RemoveHeadCommand(database),
-            new ScriptCommand(),
             new ShowCommand(database),
             new UpdateCommand(database),
             new ExitCommand()

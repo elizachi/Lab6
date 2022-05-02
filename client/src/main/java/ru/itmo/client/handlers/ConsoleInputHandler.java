@@ -17,7 +17,6 @@ public class ConsoleInputHandler extends InputHandler{
         try {
             return scanner.nextLine().trim().split(" ")[0];
         } catch(NoSuchElementException e) {
-            // todo немного изменить
             System.out.print("Куда ты жмал?? Программа завершает свою работу без сохранения данных.\n");
             System.exit(0);
         }
