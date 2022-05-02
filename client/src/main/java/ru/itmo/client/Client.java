@@ -10,10 +10,14 @@ import ru.itmo.common.messages.MessageManager;
 import ru.itmo.common.model.HumanBeing;
 import ru.itmo.common.responses.Response;
 
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
 /**
  * Класс, содержащий основную логику работы клиента
  */
 public class Client {
+    private final Logger log = Logger.getGlobal();
     private final MessageManager msg = new MessageManager();
     private final AskInput ask = new AskInput();
 
