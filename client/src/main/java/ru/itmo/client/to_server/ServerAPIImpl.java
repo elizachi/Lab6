@@ -1,11 +1,14 @@
 package ru.itmo.client.to_server;
 
 import ru.itmo.common.commands.CommandType;
+import ru.itmo.common.exceptions.TypeOfError;
+import ru.itmo.common.exceptions.WrongArgumentException;
 import ru.itmo.common.model.HumanBeing;
 import ru.itmo.common.requests.Request;
 import ru.itmo.common.responses.Response;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -26,13 +29,15 @@ public class ServerAPIImpl implements ServerAPI {
     /**
      * Получает команду и данные для ее исполнения
      */
-    public Response executeCommand(CommandType command, HumanBeing human) {
+    public Response executeCommand(CommandType command, HumanBeing human) throws WrongArgumentException {
         Request request = new Request(
                 command,
                 human
         );
         try {
             return sendToServer(request);
+        } catch (ConnectException e) {
+            throw new WrongArgumentException(TypeOfError.NOT_STARTED);
         } catch (IOException e) {
             System.out.println("Похоже, что-то пошло не так...");
             throw new RuntimeException("Pizda");
