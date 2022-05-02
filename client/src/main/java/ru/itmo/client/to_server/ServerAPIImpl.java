@@ -9,6 +9,9 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Класс, отвечающий за отправку данных на сервер
+ */
 public class ServerAPIImpl implements ServerAPI {
     private final String serverHost;
     private final int serverPort;
