@@ -54,7 +54,9 @@ public class Server {
                             continue;
                         }
                         //обработка реквеста
-                        if (!request.getCommand().equals(CommandType.EXIT)) {
+                        if(request == null) {
+                            key.cancel();
+                        } else if (!request.getCommand().equals(CommandType.EXIT)) {
                             //отправка респонза клиенту
                             write(key, commandManager.handleRequest(request));
                         } else {
@@ -131,7 +133,8 @@ public class Server {
 
             if(amount == -1) {
                 session.remove(channel);
-                ServerLauncher.log.info("Клиент "+channel.socket().getRemoteSocketAddress()+ " съебался");
+                ServerLauncher.log.info("Клиент "+channel.socket().getRemoteSocketAddress()+
+                        " превысил допустимое количество запросов");
                 channel.close();
                 key.cancel();
                 return null;

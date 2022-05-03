@@ -4,6 +4,7 @@ import ru.itmo.common.exceptions.TypeOfError;
 import ru.itmo.common.exceptions.WrongArgumentException;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class MessageManager {
@@ -21,14 +22,19 @@ public class MessageManager {
      */
     public void turnOnFriendly() {
         System.out.println("Включить дружественный интерфейс?");
-        String answer = scanner.nextLine().trim()
-                .split(" ")[0].toLowerCase();
-        if(answer.isEmpty()) {
-            CONST_FRIENDLY_INTERFACE = false;
-        } else {
-            CONST_FRIENDLY_INTERFACE = true;
+        try {
+            String answer = scanner.nextLine().trim()
+                    .split(" ")[0].toLowerCase();
+            if(answer.isEmpty()) {
+                CONST_FRIENDLY_INTERFACE = false;
+            } else {
+                CONST_FRIENDLY_INTERFACE = true;
+            }
+            friendlyInterface = CONST_FRIENDLY_INTERFACE;
+        } catch (NoSuchElementException e) {
+            System.err.println("До связи... Программа завершает свою работу");
+            System.exit(0);
         }
-        friendlyInterface = CONST_FRIENDLY_INTERFACE;
     }
 
     /**

@@ -46,6 +46,7 @@ public class HandleCommands {
     private static final Command[] commands = {
             new AddCommand(database),
             new ClearCommand(database),
+            new ExitCommand(),
             new FilterByMinutesCommand(database),
             new FilterGreaterThanSpeedCommand(database),
             new HeadCommand(database),
@@ -57,6 +58,5 @@ public class HandleCommands {
             new RemoveHeadCommand(database),
             new ShowCommand(database),
             new UpdateCommand(database),
-            new ExitCommand()
     };
 }
