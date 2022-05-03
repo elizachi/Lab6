@@ -11,8 +11,8 @@ public class FilterGreaterThanSpeedCommand implements Command{
     }
 
     @Override
-    public void execute(Object arguments) {
+    public Object execute(Object arguments) {
         HumanBeing humanBeing = (HumanBeing) arguments;
-        System.out.println(arrayDequeDAO.filterGreaterThanSpeed(humanBeing.getImpactSpeed()));
+        return arrayDequeDAO.filterGreaterThanSpeed(humanBeing.getImpactSpeed());
     }
 }

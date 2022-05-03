@@ -10,7 +10,7 @@ public class InfoCommand implements Command{
     }
 
     @Override
-    public void execute(Object arguments) {
-        System.out.print("info: Коллекция ArrayDeque,\n" + "Количество элементов: " + arrayDequeDAO.size() + "\n");
+    public Object execute(Object arguments) {
+        return ("info: Коллекция ArrayDeque,\n" + "Количество элементов: " + arrayDequeDAO.size() + "\n");
     }
 }

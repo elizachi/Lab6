@@ -35,7 +35,7 @@ public class HandleCommands {
 
     private Response executeCommand(CommandType command, Object commandArgument){
         int commandIndex = command.ordinal();
-        commands[commandIndex].execute(commandArgument);
+        commandArgument = commands[commandIndex].execute(commandArgument);
         ServerLauncher.log.info("Запрос успешно обработан");
         return new Response(Response.Status.OK, commandArgument);
     }

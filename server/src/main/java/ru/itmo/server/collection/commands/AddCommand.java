@@ -11,9 +11,10 @@ public class AddCommand implements Command{
     }
 
     @Override
-    public void execute(Object arguments) {
+    public Object execute(Object arguments) {
         HumanBeing humanBeing = (HumanBeing) arguments;
         arrayDequeDAO.add(humanBeing);
         arrayDequeDAO.sort();
+        return null;
     }
 }

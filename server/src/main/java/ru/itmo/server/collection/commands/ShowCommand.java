@@ -10,7 +10,11 @@ public class ShowCommand implements Command{
     }
 
     @Override
-    public void execute(Object arguments) {
-        System.out.println(arrayDequeDAO.showCollection());
+    public Object execute(Object arguments) {
+        if (arrayDequeDAO.showCollection() != null) {
+            return arrayDequeDAO.showCollection();
+        } else {
+            return "Коллекция пустая.";
+        }
     }
 }

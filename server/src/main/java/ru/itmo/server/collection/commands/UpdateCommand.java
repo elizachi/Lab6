@@ -11,9 +11,15 @@ public class UpdateCommand implements Command{
     }
 
     @Override
-    public void execute(Object arguments) {
+    public Object execute(Object arguments) {
         HumanBeing humanBeing = (HumanBeing) arguments;
-        arrayDequeDAO.update(humanBeing.getId(), humanBeing);
-        arrayDequeDAO.sort();
+        if(arrayDequeDAO.get(humanBeing.getId()) != null) {
+            arguments = null;
+            arrayDequeDAO.update(humanBeing.getId(), humanBeing);
+            arrayDequeDAO.sort();
+        } else {
+            arguments = ("Элемента с таким id не нашлось.\n");
+        }
+        return arguments;
     }
 }

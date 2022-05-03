@@ -41,7 +41,6 @@ public class ServerAPIImpl implements ServerAPI {
         } catch (SocketException e) {
             throw new WrongArgumentException(TypeOfError.CONNECTED_REFUSE);
         } catch (IOException e) {
-            System.out.println("Похоже, что-то пошло не так...");
             throw new RuntimeException("Pizda");
         }
     }

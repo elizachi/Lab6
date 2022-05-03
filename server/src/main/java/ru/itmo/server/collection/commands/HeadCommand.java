@@ -10,7 +10,11 @@ public class HeadCommand implements Command{
     }
 
     @Override
-    public void execute(Object arguments) {
-        arrayDequeDAO.getHead();
+    public Object execute(Object arguments) {
+        if (arrayDequeDAO.getHead() != null) {
+            return arrayDequeDAO.getHead().toString();
+        } else {
+            return "Коллекция пустая.";
+        }
     }
 }

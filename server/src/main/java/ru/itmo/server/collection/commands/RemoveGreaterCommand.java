@@ -11,8 +11,13 @@ public class RemoveGreaterCommand implements Command{
     }
 
     @Override
-    public void execute(Object arguments) {
+    public Object execute(Object arguments) {
         HumanBeing humanBeing = (HumanBeing) arguments;
-        arrayDequeDAO.removeGreater(humanBeing);
+        if (!(arrayDequeDAO.size() == 0)) {
+            arrayDequeDAO.removeGreater(humanBeing);
+            return null;
+        } else {
+            return ("Коллекция пуста.");
+        }
     }
 }

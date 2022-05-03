@@ -10,7 +10,13 @@ public class RemoveHeadCommand implements Command{
     }
 
     @Override
-    public void execute(Object arguments) {
-        arrayDequeDAO.remove(arrayDequeDAO.getHead().getId());
+    public Object execute(Object arguments) {
+        arguments = (arrayDequeDAO.getHead());
+        if (!(arrayDequeDAO.getHead() == null)) {
+            arrayDequeDAO.remove(arrayDequeDAO.getHead().getId());
+        } else {
+            arguments = ("Коллекция пустая.");
+        }
+        return arguments;
     }
 }

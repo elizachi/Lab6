@@ -11,9 +11,6 @@ import ru.itmo.common.messages.MessageManager;
 import ru.itmo.common.model.HumanBeing;
 import ru.itmo.common.responses.Response;
 
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-
 /**
  * Класс, содержащий основную логику работы клиента
  */
@@ -33,6 +30,9 @@ public class Client {
                 Response response = serverAPI.executeCommand(commandType, human);
                 if(response.status == Response.Status.OK) {
                     System.out.println("Ура ура! Получилось! Команда успешно выполнена.");
+                    if(response.getArgumentAs(String.class) != null) {
+                        System.out.println(response.getArgumentAs(String.class));
+                    }
                 } else if(response.status == Response.Status.SERVER_EXIT) {
                     System.out.println("Клиент завершает свою работу.");
                     System.exit(0);

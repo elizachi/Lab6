@@ -11,7 +11,8 @@ public class ClearCommand implements Command{
     }
 
     @Override
-    public void execute(Object arguments) {
+    public Object execute(Object arguments) {
         arrayDequeDAO.clearCollection();
+        return null;
     }
 }

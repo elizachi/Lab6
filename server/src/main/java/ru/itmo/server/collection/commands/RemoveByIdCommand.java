@@ -11,8 +11,13 @@ public class RemoveByIdCommand implements Command{
     }
 
     @Override
-    public void execute(Object arguments) {
+    public Object execute(Object arguments) {
         HumanBeing humanBeing = (HumanBeing) arguments;
-        arrayDequeDAO.remove(humanBeing.getId());
+        if (arrayDequeDAO.get(humanBeing.getId()) != null) {
+            arrayDequeDAO.remove(humanBeing.getId());
+            return null;
+        } else {
+            return "Человека с таким id не существует!";
+        }
     }
 }

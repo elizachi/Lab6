@@ -14,7 +14,8 @@ public class PrintUniqueSpeedCommand implements Command{
     }
 
     @Override
-    public void execute(Object arguments) {
+    public Object execute(Object arguments) {
+        arguments = null;
         List<Integer> uniqueFieldsSpeed = new ArrayList<>();
         for(HumanBeing human: arrayDequeDAO.getAll()) {
             Integer speed = human.getImpactSpeed();
@@ -25,7 +26,8 @@ public class PrintUniqueSpeedCommand implements Command{
             }
         }
         for(Integer element: uniqueFieldsSpeed) {
-            System.out.println(element);
+            arguments =+ element + "\n";
         }
+        return arguments;
     }
 }
