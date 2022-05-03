@@ -36,10 +36,10 @@ public class Server {
         try {
             while(true) {
                 selector.select();
-                Iterator keys = selector.selectedKeys().iterator();
+                Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
                 Request request;
                 while(keys.hasNext()) {
-                    SelectionKey key = (SelectionKey) keys.next();
+                    SelectionKey key = keys.next();
                     keys.remove();
                     if(!key.isValid()) {
                         continue;
@@ -56,7 +56,7 @@ public class Server {
                         //обработка реквеста
                         if (!request.getCommand().equals(CommandType.EXIT)) {
                             //отправка респонза клиенту
-//                            write(key, commandManager.handleRequest(request));
+                            write(key, commandManager.handleRequest(request));
                         } else {
                             stopSocketChannel();
                             response = new Response(Response.Status.SERVER_EXIT, "Сервер завершает свою работу.");

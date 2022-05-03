@@ -1,6 +1,7 @@
 package ru.itmo.server.utility;
 
 import ru.itmo.common.commands.CommandType;
+import ru.itmo.common.model.HumanBeing;
 import ru.itmo.common.requests.Request;
 import ru.itmo.common.responses.Response;
 import ru.itmo.server.ServerLauncher;
@@ -29,7 +30,7 @@ public class HandleCommands {
     }
 
     public Response handleRequest(Request request) {
-        return executeCommand(request.getCommand(), request.getArgumentAs(request.argument.getClass()));
+        return executeCommand(request.getCommand(), request.getArgumentAs(HumanBeing.class));
     }
 
     private Response executeCommand(CommandType command, Object commandArgument){
