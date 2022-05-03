@@ -5,8 +5,7 @@ public enum CommandType {
     ADD(new String[]{"askName", "askSoundtrackName", "askMinutesOfWaiting",
             "askImpactSpeed", "askRealHero", "askHasToothpick", "askCoordinates", "askMood", "askCar"}),
     CLEAR(new String[]{}),
-    EXECUTE_SCRIPT(new String[]{"askFileName"}),
-    EXIT(new String[]{}),
+//    EXECUTE_SCRIPT(new String[]{"askFileName"}),
     FILTER_BY_MINUTES_OF_WAITING(new String[]{"askMinutesOfWaiting"}),
     FILTER_GREATER_THAN_IMPACT_SPEED(new String[]{"askImpactSpeed"}),
     HEAD(new String[]{}),
@@ -19,7 +18,8 @@ public enum CommandType {
     REMOVE_HEAD(new String[]{}),
     SHOW(new String[]{}),
     UPDATE(new String[]{"askId", "askName", "askSoundtrackName", "askMinutesOfWaiting",
-            "askImpactSpeed", "askRealHero", "askHasToothpick", "askCoordinates", "askMood", "askCar"});
+            "askImpactSpeed", "askRealHero", "askHasToothpick", "askCoordinates", "askMood", "askCar"}),
+    EXIT(new String[]{});
 
     private final String[] commandFields;
 

@@ -19,7 +19,7 @@ public class HumanBeing implements Comparable {
     private Mood mood; //Поле может быть null
     private Car car; //Поле не может быть null
 
-//    public HumanBeing(){}
+    public HumanBeing(){}
 
     public HumanBeing(String name, String soundtrackName, Long minutesOfWaiting, int impactSpeed,
                       boolean realHero, Boolean hasToothpick, Coordinates coordinates, Mood mood, Car car) {
