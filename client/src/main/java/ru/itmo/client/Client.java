@@ -25,9 +25,14 @@ public class Client {
 
         while(true) {
             try {
+                // получаю проверенный тип команды, которую ввел пользователь
                 CommandType commandType = ask.askCommand(ReaderManager.getHandler());
+                // получаю сформированный объект, содержащий аргументы, необходимые для команды
                 HumanBeing human = ask.askInputManager(commandType, ReaderManager.getHandler());
+                // делаю запрос на сервер, передаю CommandType типа команды и
+                // объект класса HumanBeing, получаю ответ
                 Response response = serverAPI.executeCommand(commandType, human);
+                // если статус ответа от сервера - ОК, соообщаю об этом на консоль
                 if(response.status == Response.Status.OK) {
                     ClientLauncher.log.info("Ура ура! Получилось! Команда успешно выполнена.");
                     if(response.getArgumentAs(String.class) != null) {

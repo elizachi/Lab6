@@ -2,6 +2,7 @@ package ru.itmo.server;
 
 import ru.itmo.common.commands.CommandType;
 import ru.itmo.common.exceptions.*;
+import ru.itmo.common.messages.MessageManager;
 import ru.itmo.common.requests.Request;
 import ru.itmo.common.responses.Response;
 import ru.itmo.server.utility.HandleCommands;
@@ -161,9 +162,22 @@ public class Server {
         ServerLauncher.log.info("Начата отправка результата выполнения запроса клиенту");
         SocketChannel channel = (SocketChannel) key.channel();
         try {
+            int dataSize = response.toJson().getBytes(StandardCharsets.UTF_8).length;
+            String countPackage = Integer.toString(dataSize/4096 + dataSize%4096 == 0 ? 0 : 1);
+            channel.write(ByteBuffer.wrap(countPackage.getBytes(StandardCharsets.UTF_8)));
             //отправка респонза клиенту
-            if(response.toJson().getBytes(StandardCharsets.UTF_8).length > 4096) {
-//                separatedData(channel, response);
+            if(dataSize > 4096) {
+                for(int i = 0; i < dataSize; i+=4096) {
+                    if(i + 4096 > dataSize) {
+                        channel.write(ByteBuffer.wrap(
+                                Arrays.copyOfRange(response.toJson().getBytes(StandardCharsets.UTF_8), i, dataSize))
+                        );
+                    } else {
+                        channel.write(ByteBuffer.wrap(
+                                Arrays.copyOfRange(response.toJson().getBytes(StandardCharsets.UTF_8), i, i+4096))
+                        );
+                    }
+                }
             } else {
                 channel.write(ByteBuffer.wrap(response.toJson().getBytes(StandardCharsets.UTF_8)));
             }
@@ -172,13 +186,4 @@ public class Server {
             ServerLauncher.log.error("Отправка не удалась");
         }
     }
-
-//    private void separatedData(SocketChannel channel, Response response) {
-//        try {
-//            byte[] array = Arrays.copyOfRange(response.toJson().getBytes(StandardCharsets.UTF_8), 0, 4096);
-//            channel.write(ByteBuffer.wrap(array));
-//        } catch(IOException e) {
-//            ServerLauncher.log.error("Отправка не удалась");
-//        }
-//    }
 }
