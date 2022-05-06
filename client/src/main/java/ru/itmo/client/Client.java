@@ -35,7 +35,7 @@ public class Client {
                     }
                 } else if(response.status == Response.Status.SERVER_EXIT) {
                     ClientLauncher.log.info("Клиент завершает свою работу.");
-                    System.exit(0);
+                    break;
                 } else if(response.status == Response.Status.ERROR) {
                     ClientLauncher.log.error("В процессе выполнения данной команды произошла ошибка.");
                 }
