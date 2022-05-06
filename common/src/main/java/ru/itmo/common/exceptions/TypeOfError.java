@@ -11,7 +11,8 @@ public enum TypeOfError {
     IGNORE_STRING("Введённая строка будет проигнорирована"),
     ALREADY_EXECUTED("Файл уже был вызван ранее и ещё не завершил свою работу"),
     NOT_STARTED("Сервер ещё не запущен"),
-    CONNECTED_REFUSE("Соединение разорвано");
+    CONNECTED_REFUSE("Соединение разорвано"),
+    CONNECTION_BROKEN("Попытка переподключения к серверу...");
 
     private final String description;
 

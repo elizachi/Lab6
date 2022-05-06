@@ -8,10 +8,9 @@ import ru.itmo.common.requests.Request;
 import ru.itmo.common.responses.Response;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -20,10 +19,17 @@ import java.nio.charset.StandardCharsets;
 public class ServerAPIImpl implements ServerAPI {
     private final String serverHost;
     private final int serverPort;
+    public int attempts = 0;
+    Socket socket = new Socket();
+
 
     public ServerAPIImpl(String serverHost, int serverPort) {
         this.serverHost = serverHost;
         this.serverPort = serverPort;
+    }
+
+    public int getAttempts() {
+        return attempts;
     }
 
     /**
@@ -52,7 +58,6 @@ public class ServerAPIImpl implements ServerAPI {
      * @throws IOException
      */
     private Response sendToServer(Request request) throws IOException {
-        Socket socket = new Socket();
         socket.connect(new InetSocketAddress(serverHost, serverPort));
 
         socket.getOutputStream().write(request.toJson().getBytes(StandardCharsets.UTF_8));
@@ -64,5 +69,39 @@ public class ServerAPIImpl implements ServerAPI {
         String json = new String(responseBytes, StandardCharsets.UTF_8);
         // тут происходит пиздец девочки
         return Response.fromJson(json);
+    }
+
+    /**
+     * Close connection when everything end.
+     */
+    public void closeConnection(){
+        try{
+            socket.getInputStream().close();
+            socket.getOutputStream().close();
+            socket.close();
+            System.out.println("Соеденение успешно закрыто.");
+        } catch (IOException exception) {
+            System.err.println("Ошибка закрытия файлов.");
+        }
+    }
+
+    /**
+     * Подключение клиента к серверу
+     * @return true если переподключение прошло успешно
+     */
+    public boolean connectToServer(){
+        try {
+            if (attempts > 0)
+                System.out.println("Попытка переподключиться...");
+            attempts++;
+            socket = new Socket(serverHost, serverPort);
+        } catch (UnknownHostException e) {
+            System.err.println("Неизвестный хост: " + serverHost + ".\n");
+            return false;
+        } catch (IOException exception) {
+            System.err.print("Ошибка открытия порта " + serverPort + ".\n");
+            return false;
+        }
+        return true;
     }
 }

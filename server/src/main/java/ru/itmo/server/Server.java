@@ -17,13 +17,14 @@ import java.util.*;
 
 public class Server {
     private final HandleCommands commandManager = new HandleCommands();
-    // todo убрать response
+    // todo убрать response ?
     private Response response;
 
     private Selector selector;
     private final InetSocketAddress address;
     private final Set<SocketChannel> session;
     private ServerSocketChannel serverSocketChannel;
+    private boolean work = true;
 
     public Server(String host, int port) {
         this.address = new InetSocketAddress(host, port);
@@ -33,7 +34,7 @@ public class Server {
     public void start() {
         if(!runSocketChannel()) return;
         try {
-            while(true) {
+            while(work) {
                 selector.select();
                 Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
                 Request request;
@@ -62,14 +63,15 @@ public class Server {
                             stopSocketChannel();
                             response = new Response(Response.Status.SERVER_EXIT, "Сервер завершает свою работу.");
                             commandManager.exit();
-                            break;
+                            stopSocketChannel();
+                            work = false;
                         }
                     }
                 }
             }
+            stopSocketChannel();
         } catch(IOException e) {
             ServerLauncher.log.error("Сервер завершает свою работу... :(");
-            System.exit(0);
         }
     }
 
