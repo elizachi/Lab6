@@ -62,6 +62,7 @@ public class ServerAPIImpl implements ServerAPI {
         System.arraycopy(buffer, 0, responseBytes, 0, amount);
 
         String json = new String(responseBytes, StandardCharsets.UTF_8);
+        // тут происходит пиздец девочки
         return Response.fromJson(json);
     }
 }

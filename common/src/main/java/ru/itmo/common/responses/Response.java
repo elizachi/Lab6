@@ -2,11 +2,13 @@ package ru.itmo.common.responses;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+
+import java.io.StringReader;
 
 public class Response {
     public final Status status;
     public final Object argument;
-
 
     public Response(Status status, Object argument) {
         this.status = status;
@@ -14,7 +16,7 @@ public class Response {
     }
 
 
-    public static Response fromJson(String json) {
+    public static Response fromJson(String json)  {
         return new Gson().fromJson(json, Response.class);
     }
 

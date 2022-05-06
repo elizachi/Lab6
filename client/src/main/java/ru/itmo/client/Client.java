@@ -43,6 +43,7 @@ public class Client {
                 ReaderManager.returnOnPreviousReader();
                 ask.removeLastElement();
             } catch (RuntimeException e) {
+                e.printStackTrace();
                 System.err.println("Непредвиденная ошибка");
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);

@@ -7,14 +7,13 @@ import ru.itmo.common.responses.Response;
 import ru.itmo.server.utility.HandleCommands;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class Server {
     private final HandleCommands commandManager = new HandleCommands();
@@ -162,10 +161,23 @@ public class Server {
         SocketChannel channel = (SocketChannel) key.channel();
         try {
             //отправка респонза клиенту
-            channel.write(ByteBuffer.wrap(response.toJson().getBytes(StandardCharsets.UTF_8)));
+            if(response.toJson().getBytes(StandardCharsets.UTF_8).length > 4096) {
+//                separatedData(channel, response);
+            } else {
+                channel.write(ByteBuffer.wrap(response.toJson().getBytes(StandardCharsets.UTF_8)));
+            }
             ServerLauncher.log.info("Отправка выполнена успешно");
         } catch (IOException e) {
             ServerLauncher.log.error("Отправка не удалась");
         }
     }
+
+//    private void separatedData(SocketChannel channel, Response response) {
+//        try {
+//            byte[] array = Arrays.copyOfRange(response.toJson().getBytes(StandardCharsets.UTF_8), 0, 4096);
+//            channel.write(ByteBuffer.wrap(array));
+//        } catch(IOException e) {
+//            ServerLauncher.log.error("Отправка не удалась");
+//        }
+//    }
 }
