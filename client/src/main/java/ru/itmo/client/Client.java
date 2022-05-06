@@ -33,14 +33,14 @@ public class Client {
 
         while (!serverAPI.connectToServer()) {
             if(serverAPI.getAttempts() > connectionAttempts){
-                System.err.println("Превышено количество попыток подключиться");
+                ClientLauncher.log.error("Превышено количество попыток подключиться");
                 return;
             }
             try {
                 Thread.sleep(connectionTimeout);
             } catch (InterruptedException e) {
-                System.err.println("Произошла ошибка при попытке ожидания подключения!");
-                System.out.println("Повторное подключение будет произведено немедленно.");
+                ClientLauncher.log.error("Произошла ошибка при попытке ожидания подключения!");
+                ClientLauncher.log.info("Повторное подключение будет произведено немедленно.");
             }
         }
 
@@ -79,13 +79,13 @@ public class Client {
                     System.out.println("Попытка переподключиться..");
                     while (!serverAPI.connectToServer()){
                         if(serverAPI.getAttempts() > connectionAttempts){
-                            System.err.println("Превышено количество попыток подключиться.");
+                            ClientLauncher.log.error("Превышено количество попыток подключиться.");
                             return;
                         }
                         try {
                             Thread.sleep(connectionTimeout);
                         } catch (InterruptedException exception) {
-                            System.err.println("Произошла ошибка при попытке ожидания подключения.");
+                            ClientLauncher.log.error("Произошла ошибка при попытке ожидания подключения.");
                         }
                     }
 

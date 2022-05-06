@@ -18,7 +18,6 @@ import java.util.*;
 
 public class Server {
     private final HandleCommands commandManager = new HandleCommands();
-    // todo убрать response ?
     private Response response;
 
     private Selector selector;
@@ -61,10 +60,8 @@ public class Server {
                             //отправка респонза клиенту
                             write(key, commandManager.handleRequest(request));
                         } else {
-                            stopSocketChannel();
                             response = new Response(Response.Status.SERVER_EXIT, "Сервер завершает свою работу.");
                             commandManager.exit();
-                            stopSocketChannel();
                             work = false;
                         }
                     }

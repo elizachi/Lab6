@@ -13,6 +13,6 @@ public class FilterByMinutesCommand implements Command{
     @Override
     public Object execute(Object arguments) {
         HumanBeing humanBeing = (HumanBeing) arguments;
-        return arrayDequeDAO.filterByMinutes(humanBeing.getMinutesOfWaiting());
+        return arrayDequeDAO.filterByMinutes(humanBeing.getMinutesOfWaiting()).toString();
     }
 }

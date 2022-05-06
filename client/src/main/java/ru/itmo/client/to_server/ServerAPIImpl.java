@@ -1,5 +1,6 @@
 package ru.itmo.client.to_server;
 
+import ru.itmo.client.ClientLauncher;
 import ru.itmo.common.commands.CommandType;
 import ru.itmo.common.exceptions.TypeOfError;
 import ru.itmo.common.exceptions.WrongArgumentException;
@@ -97,9 +98,9 @@ public class ServerAPIImpl implements ServerAPI {
             socket.getInputStream().close();
             socket.getOutputStream().close();
             socket.close();
-            System.out.println("Соеденение успешно закрыто.");
+            ClientLauncher.log.info("Соеденение успешно закрыто.");
         } catch (IOException exception) {
-            System.err.println("Ошибка закрытия файлов.");
+            ClientLauncher.log.error("Ошибка закрытия файлов.");
         }
     }
 
@@ -114,10 +115,10 @@ public class ServerAPIImpl implements ServerAPI {
             attempts++;
             socket = new Socket(serverHost, serverPort);
         } catch (UnknownHostException e) {
-            System.err.println("Неизвестный хост: " + serverHost + ".\n");
+            ClientLauncher.log.error("Неизвестный хост: " + serverHost + ".\n");
             return false;
         } catch (IOException exception) {
-            System.err.print("Ошибка открытия порта " + serverPort + ".\n");
+            ClientLauncher.log.error("Ошибка открытия порта " + serverPort + ".\n");
             return false;
         }
         return true;
