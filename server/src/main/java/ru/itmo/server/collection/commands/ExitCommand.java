@@ -4,6 +4,6 @@ public class ExitCommand implements Command{
 
     @Override
     public Object execute(Object arguments) {
-        return null;
+        return "exit";
     }
 }

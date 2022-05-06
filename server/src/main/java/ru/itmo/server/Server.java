@@ -62,12 +62,13 @@ public class Server {
                             stopSocketChannel();
                             response = new Response(Response.Status.SERVER_EXIT, "Сервер завершает свою работу.");
                             commandManager.exit();
+                            break;
                         }
                     }
                 }
             }
         } catch(IOException e) {
-            System.err.println("Сервер завершает свою работу... :(");
+            ServerLauncher.log.error("Сервер завершает свою работу... :(");
             System.exit(0);
         }
     }

@@ -17,10 +17,10 @@ import ru.itmo.common.responses.Response;
 public class Client {
     private final MessageManager msg = new MessageManager();
     private final AskInput ask = new AskInput();
+    private final String serverHost = "localhost";
+    private final int serverPort = 65100;
 
     public void start() {
-        String serverHost = "localhost";
-        int serverPort = 65100;
         ServerAPI serverAPI = new ServerAPIImpl(serverHost, serverPort);
 
         while(true) {
@@ -29,26 +29,26 @@ public class Client {
                 HumanBeing human = ask.askInputManager(commandType, ReaderManager.getHandler());
                 Response response = serverAPI.executeCommand(commandType, human);
                 if(response.status == Response.Status.OK) {
-                    System.out.println("Ура ура! Получилось! Команда успешно выполнена.");
+                    ClientLauncher.log.info("Ура ура! Получилось! Команда успешно выполнена.");
                     if(response.getArgumentAs(String.class) != null) {
                         System.out.println(response.getArgumentAs(String.class));
                     }
                 } else if(response.status == Response.Status.SERVER_EXIT) {
-                    System.out.println("Клиент завершает свою работу.");
+                    ClientLauncher.log.info("Клиент завершает свою работу.");
                     System.exit(0);
                 } else if(response.status == Response.Status.ERROR) {
-                    System.out.println("В процессе выполнения данной команды произошла ошибка.");
+                    ClientLauncher.log.error("В процессе выполнения данной команды произошла ошибка.");
                 }
             } catch (NullPointerException e) {
                 ReaderManager.returnOnPreviousReader();
                 ask.removeLastElement();
             } catch (RuntimeException e) {
                 e.printStackTrace();
-                System.err.println("Непредвиденная ошибка");
+                ClientLauncher.log.error("Непредвиденная ошибка");
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
                 if(e.getType() == TypeOfError.NOT_STARTED) {
-                    System.exit(0);
+                    break;
                 }
             }
 
