@@ -163,7 +163,8 @@ public class Server {
         SocketChannel channel = (SocketChannel) key.channel();
         try {
             int dataSize = response.toJson().getBytes(StandardCharsets.UTF_8).length;
-            String countPackage = Integer.toString(dataSize/4096 + dataSize%4096 == 0 ? 0 : 1);
+            int count = dataSize/4096 + (dataSize%4096 == 0 ? 0 : 1);
+            String countPackage = Integer.toString(count);
             channel.write(ByteBuffer.wrap(countPackage.getBytes(StandardCharsets.UTF_8)));
             //отправка респонза клиенту
             if(dataSize > 4096) {

@@ -74,11 +74,10 @@ public class ServerAPIImpl implements ServerAPI {
             // поэтому создаем строго фиксированный под кол-во считанных байт)
             byte[] responseBytes = new byte[amount];
             System.arraycopy(buffer, 0, responseBytes, 0, amount);
-            // десериализуем из байтиков в строчку
-            json.append(new String(responseBytes, StandardCharsets.UTF_8));
+            String add = new String(responseBytes, StandardCharsets.UTF_8);
+            json.append(add);
             count--;
         }
-        System.out.println(json);
         // тут происходит пиздец девочки - парсим из json'а
         return Response.fromJson(json.toString());
     }
