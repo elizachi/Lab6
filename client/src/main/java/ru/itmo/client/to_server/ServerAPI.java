@@ -8,4 +8,7 @@ import ru.itmo.common.responses.Response;
 
 public interface ServerAPI {
     Response executeCommand(CommandType command, HumanBeing human) throws WrongArgumentException;
+    void closeConnection();
+    boolean connectToServer();
+    int getAttempts();
 }

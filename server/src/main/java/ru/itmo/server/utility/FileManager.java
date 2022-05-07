@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import ru.itmo.common.model.HumanBeing;
+import ru.itmo.server.ServerLauncher;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,11 +32,11 @@ public class FileManager {
         if (System.getenv().get(envVariable) != null) {
             try (FileWriter collectionFileWriter = new FileWriter(new File(System.getenv().get(envVariable)))) {
                 collectionFileWriter.write(gson.toJson(collection));
-                System.out.println("Коллекция успешно сохранена в файл.");
+                ServerLauncher.log.info("Коллекция успешно сохранена в файл.");
             } catch (IOException exception) {
-                System.err.println("Загрузочный файл является не может быть открыт.");
+                ServerLauncher.log.error("Загрузочный файл является не может быть открыт.");
             }
-        } else System.err.println("Системная переменная с загрузочным файлом не найдена!");
+        } else ServerLauncher.log.error("Системная переменная с загрузочным файлом не найдена!");
     }
 
     /**
@@ -49,19 +50,19 @@ public class FileManager {
                 Type collectionType = new TypeToken<ArrayDeque<HumanBeing>>() {
                 }.getType();
                 collection = gson.fromJson(scanner.nextLine().trim(), collectionType);
-                System.out.println("Коллекция успешно загружена.");
+                ServerLauncher.log.info("Коллекция успешно загружена.");
                 return collection;
             } catch (FileNotFoundException exception) {
-                System.err.println("Загрузочный файл не найден, коллекция будет создана автоматически.");
+                ServerLauncher.log.error("Загрузочный файл не найден, коллекция будет создана автоматически.");
             } catch (NoSuchElementException exception) {
-                System.err.println("Загрузочный файл пуст!");
+                ServerLauncher.log.error("Загрузочный файл пуст!");
             } catch (JsonParseException | NullPointerException exception) {
-                System.err.println("В загрузочном файле не обнаружена корректная коллекция.");
+                ServerLauncher.log.error("В загрузочном файле не обнаружена корректная коллекция.");
             } catch (IllegalStateException exception) {
-                System.err.println("Непредвиденная ошибка!");
+                ServerLauncher.log.error("Непредвиденная ошибка!");
                 System.exit(0);
             }
-        } else System.err.println("Системная переменная с загрузочным файлом не найдена!");
+        } else ServerLauncher.log.error("Системная переменная с загрузочным файлом не найдена!");
         return new ArrayDeque<>();
     }
 }

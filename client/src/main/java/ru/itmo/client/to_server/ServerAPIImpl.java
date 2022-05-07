@@ -1,5 +1,6 @@
 package ru.itmo.client.to_server;
 
+import ru.itmo.client.ClientLauncher;
 import ru.itmo.common.commands.CommandType;
 import ru.itmo.common.exceptions.TypeOfError;
 import ru.itmo.common.exceptions.WrongArgumentException;
@@ -9,10 +10,9 @@ import ru.itmo.common.requests.Request;
 import ru.itmo.common.responses.Response;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -22,10 +22,17 @@ import java.util.Arrays;
 public class ServerAPIImpl implements ServerAPI {
     private final String serverHost;
     private final int serverPort;
+    public int attempts = 0;
+    Socket socket = new Socket();
+
 
     public ServerAPIImpl(String serverHost, int serverPort) {
         this.serverHost = serverHost;
         this.serverPort = serverPort;
+    }
+
+    public int getAttempts() {
+        return attempts;
     }
 
     /**
@@ -80,5 +87,39 @@ public class ServerAPIImpl implements ServerAPI {
         }
         // тут происходит пиздец девочки - парсим из json'а
         return Response.fromJson(json.toString());
+    }
+
+    /**
+     * Close connection when everything end.
+     */
+    public void closeConnection(){
+        try{
+            socket.getInputStream().close();
+            socket.getOutputStream().close();
+            socket.close();
+            ClientLauncher.log.info("Соеденение успешно закрыто.");
+        } catch (IOException exception) {
+            ClientLauncher.log.error("Ошибка закрытия файлов.");
+        }
+    }
+
+    /**
+     * Подключение клиента к серверу
+     * @return true если переподключение прошло успешно
+     */
+    public boolean connectToServer(){
+        try {
+            if (attempts > 0)
+                System.out.println("Попытка переподключиться...");
+            attempts++;
+            socket = new Socket(serverHost, serverPort);
+        } catch (UnknownHostException e) {
+            ClientLauncher.log.error("Неизвестный хост: " + serverHost + ".\n");
+            return false;
+        } catch (IOException exception) {
+            ClientLauncher.log.error("Ошибка открытия порта " + serverPort + ".\n");
+            return false;
+        }
+        return true;
     }
 }

@@ -15,8 +15,9 @@ public class PrintUniqueSpeedCommand implements Command{
 
     @Override
     public Object execute(Object arguments) {
-        arguments = null;
+        arguments = "";
         List<Integer> uniqueFieldsSpeed = new ArrayList<>();
+        if (arrayDequeDAO.size() != 0) {
         for(HumanBeing human: arrayDequeDAO.getAll()) {
             Integer speed = human.getImpactSpeed();
             if(!uniqueFieldsSpeed.contains(speed)) {
@@ -26,8 +27,11 @@ public class PrintUniqueSpeedCommand implements Command{
             }
         }
         for(Integer element: uniqueFieldsSpeed) {
-            arguments =+ element + "\n";
+            arguments += element.toString() + "\n";
         }
         return arguments;
+    } else {
+            return "Коллекция пустая.";
+        }
     }
 }

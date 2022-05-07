@@ -17,13 +17,34 @@ import ru.itmo.common.responses.Response;
 public class Client {
     private final MessageManager msg = new MessageManager();
     private final AskInput ask = new AskInput();
-    private final String serverHost = "localhost";
-    private final int serverPort = 65100;
+    private final String serverHost;
+    private final int serverPort;
+    private final int connectionAttempts = 20;
+    private final int connectionTimeout = 2000;
+
+    public Client(String serverHost, int serverPort){
+        this.serverHost = serverHost;
+        this.serverPort = serverPort;
+    }
 
     public void start() {
         ServerAPI serverAPI = new ServerAPIImpl(serverHost, serverPort);
+        boolean run = true;
 
-        while(true) {
+        while (!serverAPI.connectToServer()) {
+            if(serverAPI.getAttempts() > connectionAttempts){
+                ClientLauncher.log.error("Превышено количество попыток подключиться");
+                return;
+            }
+            try {
+                Thread.sleep(connectionTimeout);
+            } catch (InterruptedException e) {
+                ClientLauncher.log.error("Произошла ошибка при попытке ожидания подключения!");
+                ClientLauncher.log.info("Повторное подключение будет произведено немедленно.");
+            }
+        }
+
+        while(run) {
             try {
                 // получаю проверенный тип команды, которую ввел пользователь
                 CommandType commandType = ask.askCommand(ReaderManager.getHandler());
@@ -40,7 +61,8 @@ public class Client {
                     }
                 } else if(response.status == Response.Status.SERVER_EXIT) {
                     ClientLauncher.log.info("Клиент завершает свою работу.");
-                    break;
+                    serverAPI.closeConnection();
+                    run = false;
                 } else if(response.status == Response.Status.ERROR) {
                     ClientLauncher.log.error("В процессе выполнения данной команды произошла ошибка.");
                 }
@@ -49,15 +71,33 @@ public class Client {
                 ask.removeLastElement();
             } catch (RuntimeException e) {
                 e.printStackTrace();
-                ClientLauncher.log.error("Непредвиденная ошибка");
+                ClientLauncher.log.error("Непредвиденная ошибка.");
             } catch (WrongArgumentException e) {
                 msg.printErrorMessage(e);
+                if (e.getType() == TypeOfError.CONNECTION_BROKEN) {
+
+                    System.out.println("Попытка переподключиться..");
+                    while (!serverAPI.connectToServer()){
+                        if(serverAPI.getAttempts() > connectionAttempts){
+                            ClientLauncher.log.error("Превышено количество попыток подключиться.");
+                            return;
+                        }
+                        try {
+                            Thread.sleep(connectionTimeout);
+                        } catch (InterruptedException exception) {
+                            ClientLauncher.log.error("Произошла ошибка при попытке ожидания подключения.");
+                        }
+                    }
+
+                }
+                if (e.getType() == TypeOfError.CONNECTED_REFUSE) {
+                    run = false;
+                }
                 if(e.getType() == TypeOfError.NOT_STARTED) {
-                    break;
+                    run = false;
                 }
             }
 
         }
-
     }
 }

@@ -13,6 +13,6 @@ public class ClearCommand implements Command{
     @Override
     public Object execute(Object arguments) {
         arrayDequeDAO.clearCollection();
-        return null;
+        return "Коллекция успешно очищена.";
     }
 }
